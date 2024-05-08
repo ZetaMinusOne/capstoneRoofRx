@@ -4,7 +4,7 @@ import { Button, Heading, Text } from "../components";
 import { useNavigate, useLocation } from "react-router-dom";
 import CustomInput from "../components/TextBoxInput";
 import { confirmResetPassword } from 'aws-amplify/auth';
-
+import {PasswordInput} from "../components/EyeInput"
 export default function ResetPasswordPagePage() {
   const [key, setKey] = useState("");
   const [password, setPassword] = useState("");
@@ -87,7 +87,7 @@ export default function ResetPasswordPagePage() {
       await confirmResetPassword({ username: email, confirmationCode: key, newPassword: password });
   
       // Password reset successful, navigate to sign-in page
-      navigate("/signin");
+      navigate("/");
     } catch (error) {
       console.error("Error updating password:", error.message);
       setLoading(false); // Set loading to false when validation fails
@@ -130,13 +130,13 @@ export default function ResetPasswordPagePage() {
                   <Heading as="h2" className="!text-black-900 uppercase">
                     New Password
                   </Heading>
-                  <CustomInput
+                  <PasswordInput
                     shape="round"
                     type="password"
                     name="password"
                     value={password}
                     placeholder={`Enter your new password`}
-                    onChange={handlePasswordChange}
+                    handlePasswordChange={handlePasswordChange}
                     className="sm:pr-5 border-2 border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-blue-500 hover:border-blue-500 hover:shadow-md"
                   />
                   <PasswordRequirements password={password} />
@@ -146,12 +146,12 @@ export default function ResetPasswordPagePage() {
                   <Heading as="h3" className="!text-black-900 uppercase">
                     Confirm New Password
                   </Heading>
-                  <CustomInput
+                  <PasswordInput
                     shape="round"
                     type="password"
                     name="confirmpassword"
                     value={confirmPassword}
-                    onChange={handleConfirmPasswordChange}
+                    handlePasswordChange={handleConfirmPasswordChange}
                     placeholder={`Re-enter your password`}
                     className="sm:pr-5 border-2 border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-blue-500 hover:border-blue-500 hover:shadow-md"
                   />

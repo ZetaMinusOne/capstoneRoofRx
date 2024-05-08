@@ -55,15 +55,17 @@ const options = [
 ];
 
 const SearchableDropdown = ({handle, defaultValue}) => {
-  const [selectedOption, setSelectedOption] = useState(defaultValue);
+  const [selectedOption, setSelectedOption] = useState(null);
 
   useEffect(() => {
     // Find the option that matches the defaultValue
     const defaultOption = options.find(option => option.value === defaultValue);
     if (defaultOption) {
       setSelectedOption(defaultOption);
+    } else{
+      setSelectedOption(null)
     }
-  }, [defaultValue]);
+  }, [defaultValue, options]);
 
   const handleChange = (selectedOption) => {
     setSelectedOption(selectedOption);

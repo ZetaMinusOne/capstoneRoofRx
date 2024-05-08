@@ -13,7 +13,7 @@ response_config = client.create_endpoint_config(
             "ServerlessConfig": {
                 "MemorySizeInMB": 2048,
                 "MaxConcurrency": 20,
-                "ProvisionedConcurrency": 10,
+                #"ProvisionedConcurrency": 10, //Not for Development Purposes (HIGH COSTS)
             }
         } 
     ]

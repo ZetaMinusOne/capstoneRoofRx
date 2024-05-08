@@ -2,7 +2,7 @@
 import "../../CSS/Modal.css"
 
 
-export default function Modal({ toggleModal, errorModal, toggleConfirmChanges, confirmChanges, handleUpdateProfile, handleConfirmChanges }) {
+export default function Modal({ toggleModal, errorModal, toggleConfirmChanges, confirmChanges, handleUpdateProfile, handleConfirmChanges, isLoading }) {
   return (
     <>
     {!confirmChanges && 
@@ -26,7 +26,7 @@ export default function Modal({ toggleModal, errorModal, toggleConfirmChanges, c
           </div>
         </div>
       }
-      {(errorModal && confirmChanges) ? (
+      {(errorModal && confirmChanges && !isLoading) ? (
         <div className="modal">
           <div onClick={() => {toggleModal(); toggleConfirmChanges(); }} className="overlay"></div>
           <div className="modal-content">
@@ -41,7 +41,7 @@ export default function Modal({ toggleModal, errorModal, toggleConfirmChanges, c
             </button>
           </div>
         </div>
-      ):((!errorModal && confirmChanges) &&
+      ):((!errorModal && confirmChanges && !isLoading) &&
         <div className="modal">
           <div onClick={() => {toggleModal(); toggleConfirmChanges(); handleUpdateProfile();}} className="overlay"></div>
           <div className="modal-content">

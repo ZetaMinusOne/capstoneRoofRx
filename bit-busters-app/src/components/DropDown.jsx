@@ -73,7 +73,7 @@ const DropdownMenu = () => {
             // Perform logout action
             try {
                 await signOut();
-                navigate("/signin");
+                navigate("/");
               } catch (error) {
                 console.log('error signing out: ', error);
               }

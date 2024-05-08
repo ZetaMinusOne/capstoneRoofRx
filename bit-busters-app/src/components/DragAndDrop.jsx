@@ -20,6 +20,10 @@ export const DragAndDrop = (props) => {
         fileInputRef.current.click();
     }
 
+    function clearFileInput() {
+        fileInputRef.current.value = null;
+    }
+
     function onFileSelect(event) {
         if(totalImagesAdded < 5){
             const files = event.target.files;
@@ -29,6 +33,8 @@ export const DragAndDrop = (props) => {
             const processedImages = []; // Store processed images
 
             let localImageCount = totalImagesAdded;
+
+            let newImagesAdded = false; // Flag to track if new images were added
 
             for (let i = 0; i < files.length; i++) {
                 if (files[i].type.split("/")[0] !== "image") continue;
@@ -41,14 +47,20 @@ export const DragAndDrop = (props) => {
                     const imageUrl = URL.createObjectURL(files[i]);
                     processedImages.push({ name: files[i].name, url: imageUrl });
                     localImageCount = localImageCount + 1;
+                    newImagesAdded = true; // Set the flag to true if a new image is added
                 }    
             }
-
-            if(totalImagesAdded + localImageCount > 5){
-                setTotalImagesAdded(5);
-            }
-            else{
-                setTotalImagesAdded(prevValue => prevValue + localImageCount);
+            
+            if(newImagesAdded){
+                console.log("local count before adding", localImageCount);
+                if(totalImagesAdded + localImageCount > 5 && localImageCount !== totalImagesAdded + 1){
+                    setTotalImagesAdded(5);
+                }
+                else{
+                    setTotalImagesAdded(prevValue => prevValue + localImageCount);
+                    localImageCount = localImageCount - totalImagesAdded;
+                    console.log("local count after substracting", localImageCount);
+                }
             }
             props.addToImageList({ images: processedImages, pipeIndex: props.pipeIndex });
         }
@@ -65,6 +77,7 @@ export const DragAndDrop = (props) => {
             const updatedImages = prevImages.filter((_, i) => i !== index);
             props.deleteFromImageList({ images: updatedImages, pipeIndex: props.pipeIndex });
             setTotalImagesAdded(prevValue => prevValue - 1);
+            clearFileInput() //To be able to add the picture you erased again
             return updatedImages;
         });
     }
@@ -89,6 +102,8 @@ export const DragAndDrop = (props) => {
 
             let localImageCount = totalImagesAdded;
 
+            let newImagesAdded = false; // Flag to track if new images were added
+
             const processedImages = [];
 
             console.log("FILES LENGTH IN DROP", files.length);
@@ -103,14 +118,21 @@ export const DragAndDrop = (props) => {
                     const imageUrl = URL.createObjectURL(files[i]);
                     processedImages.push({ name: files[i].name, url: imageUrl });
                     localImageCount = localImageCount + 1;
+                    newImagesAdded = true; // Set the flag to true if a new image is added
                 }
             }
+            
+            console.log("local count before adding", localImageCount);
 
-            if(totalImagesAdded + localImageCount > 5){
-                setTotalImagesAdded(5);
-            }
-            else{
-                setTotalImagesAdded(prevValue => prevValue + localImageCount);
+            if(newImagesAdded){
+                if(totalImagesAdded + localImageCount > 5 && localImageCount !== totalImagesAdded + 1){
+                    setTotalImagesAdded(5);
+                }
+                else{
+                    setTotalImagesAdded(prevValue => prevValue + localImageCount);
+                    localImageCount = localImageCount - totalImagesAdded;
+                    console.log("local count after substracting", localImageCount);
+                }
             }
             props.addToImageList({ images: processedImages, pipeIndex: props.pipeIndex });
         }
@@ -156,7 +178,8 @@ export const DragAndDrop = (props) => {
                 <div className="container">
                     {props.images.map((images, index) => (
                             <div className="image" key={index}>
-                                <span className="delete" onClick={() => deleteImage(index)} >&times;</span>
+                                <span className="delete" onClick={() => (!props.enableButton ? null :( deleteImage(index)))} >&times;</span>
+                                 {/* onClick={() => (!props.enableButton ? null : (handleIndex(i), setModal(!modal)))} */}
                                 <img src={images.url} alt={images.name} />
                             </div>
                         ))}

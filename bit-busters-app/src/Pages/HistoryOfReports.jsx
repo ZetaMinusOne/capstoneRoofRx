@@ -224,7 +224,7 @@ export default function HistoryOfReports() {
               </table>
             </div>
 
-            <div className="flex flex-wrap justify-center mt-2">
+            <div className="flex flex-wrap justify-center mt-2 mb-8">
               <span>
                 <strong className="mr-4">
                   {pageIndex + 1} of {pageOptions.length}

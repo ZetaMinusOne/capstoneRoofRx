@@ -89,9 +89,11 @@ const styles = StyleSheet.create({
 
 });
 
-const PDFDocument = ({ signature, isSigned }) => {
+const PDFDocument = ({ signature, isSigned}) => {
 
     const { data, setValues } = useContext(reportGenerationContext);
+
+    console.log("IMAGES PDFDOCUMENT VIEW", data.images);
     
     const [blob, setBlob] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -192,6 +194,16 @@ const PDFDocument = ({ signature, isSigned }) => {
     //     console.log("Number of Broken Pipes:", brokenPipeCount);
     // }
     
+    const convertUrlToDataUri = async (url) => {
+        const response = await fetch(url);
+        const blob = await response.blob();
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => reject(reader.error);
+          reader.readAsDataURL(blob);
+        });
+      };
 
     const saveUrlsFromS3 = async () => {
         const allUsableUrls = {};
@@ -216,7 +228,7 @@ const PDFDocument = ({ signature, isSigned }) => {
                     // Structure each item as desired
                     usableUrls.push({
                         predictions: pipe.predictions,
-                        url: localUrl
+                        url: await convertUrlToDataUri(localUrl),
                     });
                 } catch (error) {
                     console.error("Error downloading or converting file:", error);
@@ -249,6 +261,7 @@ const PDFDocument = ({ signature, isSigned }) => {
             }
           }
         }
+        //setValues({...data, brokenPipes: brokenPipesCount})
         return brokenPipesCount;
       }
     
@@ -333,6 +346,7 @@ const PDFDocument = ({ signature, isSigned }) => {
     // Check if data exists before deconstructing it
 
     console.log("context data1", data);
+    console.log("IMAGES BEFORE BUILDING PDF********************************************:", imagePaths);
 
 
     return (
@@ -426,17 +440,17 @@ const PDFDocument = ({ signature, isSigned }) => {
 
                         <View style={{ flexDirection: "row" }}>
                             <Text style={styles.clientInfoType}>Total of Broken Pipes: </Text>
-                            <Text style={styles.clientInfo}>{calculateBrokenPipes(data.images)}</Text>
+                            <Text style={styles.clientInfo}>{data.brokenPipes}</Text>
                         </View>
 
                         <View style={{ flexDirection: "row" }}>
-                            <Text style={styles.clientInfoType}>Price: $</Text>
+                            <Text style={styles.clientInfoType}>Price per Pipe: $</Text>
                             <Text style={styles.clientInfo}>{data?.price}</Text>
                         </View>
 
                         <View style={{ flexDirection: "row" }}>
                             <Text style={styles.clientInfoType}>Total: $</Text>
-                            <Text style={styles.clientInfo}>{calculateBrokenPipes(data.images) * data.price}</Text>
+                            <Text style={styles.clientInfo}>{data.brokenPipes * data.price}</Text>
                         </View>
                     </View>
 

@@ -113,8 +113,8 @@ def handler(event, context):
                 phone_number = data.get('PhoneNumber')
 
                 # Check if client already exists
-                select_query = "SELECT * FROM Client WHERE FirstName = %s AND LastName = %s AND PhoneNumber = %s AND Email = %s"
-                cursor.execute(select_query, (first_name, last_name, phone_number, email))
+                select_query = "SELECT * FROM Client WHERE Address_ID = %s"
+                cursor.execute(select_query, (address_id,))
                 existing_client = cursor.fetchone()
 
                 if existing_client:

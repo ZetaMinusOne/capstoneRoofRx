@@ -62,6 +62,7 @@ export default function ReportGenerationOnePage() {
   const [emailError2, setEmailError2] = useState(false);
 
   const [submitError, setSubmitError] = useState(false);
+  const [showInstructionContent, setShowInstructionContent] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [dragAndDropImagesParent, setDragAndDropImagesParent] = useState([]);
@@ -69,13 +70,19 @@ export default function ReportGenerationOnePage() {
   const [currentProgress, setCurrentProgress] = useState(0);
   const [barloading, setBarLoading] = useState(false);
 
-  // useEffect (() => {
+  const [enableButton, setEnableButton] = useState(true) ;
+  const [enableAnalyze, setEnableAnalyze] = useState(false);
+  const [errorScanning, setErrorScanning] = useState(false);
+  const [errorUploading, setErrorUploading] = useState(false);
+   // useEffect (() => {
   //   setLoading(true);
   //   setTimeout(() => {
   //     setLoading(false);
   //   }, 5000)
   // }, [])
-
+  const showInstructions = () => {
+    setShowInstructionContent(!showInstructionContent);
+  };
   useEffect(() => {
     console.log("THIS IS THE GLOBAL MODEL RESPONSE:", data.images);
   }, [data.images]);
@@ -109,6 +116,8 @@ export default function ReportGenerationOnePage() {
       setCurrentProgress((currentPipe/totalNumberOfPipes) * 100);
     }
 
+    setLoading(false);
+
     console.log("Model Response Structured:", modelResponseStructure)
 
     return modelResponseStructure;
@@ -118,7 +127,6 @@ export default function ReportGenerationOnePage() {
     return new Promise((resolve, reject) => {
       try {
         console.log("Calling The ML Model");
-        setLoading(true);
         fetch('https://zs9op711v1.execute-api.us-east-1.amazonaws.com/dev/mlmodel', {
           method: 'POST',
           headers: {
@@ -127,9 +135,27 @@ export default function ReportGenerationOnePage() {
           body: JSON.stringify({pipeInfo}),
         })
           .then((response) => {
-            setLoading(false);
             console.log("THIS IS THE ML MODEL FETCH RESPONSE:", response);
-            resolve(response);
+            if (response.status === 504) {
+              // Handle the 504 error condition
+              console.log("Gateway Timeout (504) error occurred");
+              // Reject the promise with an error message
+              reject("Gateway Timeout (504) error occurred");
+
+              setErrorScanning(true);
+              setEnableButton(true);
+
+            } else if(response.status === 500){
+              console.log("Image Processing (500) error occurred");
+
+              reject("Image Processing (500) error occurred");
+
+              setErrorScanning(true);
+              setEnableButton(true);
+            }
+            else{
+              resolve(response);
+            }
           })
           .catch((error) => {
             setLoading(false);
@@ -193,6 +219,16 @@ export default function ReportGenerationOnePage() {
         })
           .then((response) => {
             console.log("THIS IS THE URL FETCH RESPONSE:", response);
+            if (response.status !== 200) {
+              // Handle the 504 error condition
+              console.log( `The following error with status code: ${response.status} occurred`);
+              // Reject the promise with an error message
+              reject(`Error status code: ${response.status}`);
+
+              setErrorUploading(true);
+              setEnableButton(true);
+
+            } 
             resolve(response);
           })
           .catch((error) => {
@@ -256,9 +292,13 @@ export default function ReportGenerationOnePage() {
   }
 
   const handleAnalyzeImages = async () => {
+    setErrorScanning(false);
+    setErrorUploading(false);
     setBarLoading(true);
+    setLoading(true);
     setCurrentProgress(0);
-
+    setEnableButton(false);
+    setEnableAnalyze(false);
     console.log("Uploaded images:", dragAndDropImagesParent);
 
     try {
@@ -275,12 +315,29 @@ export default function ReportGenerationOnePage() {
       setValues(data => ({ ...data, images: modelResponse }));
 
       console.log("MODEL RESPONSE:", modelResponse);
-
+      if(modelResponse) {
+        setEnableButton(true);
+        setEnableAnalyze(true);
+      }
     } catch (error) {
       console.error("Error in handleAnalyzeImages:", error);
       // Handle the error here, e.g., show a notification or display an error message
     }
   }
+
+  useEffect(() => {
+   const savedData =  window.localStorage.getItem("data")
+   const savedDataParse = savedData ? JSON.parse(savedData) : null;
+   console.log("JSON.parse(savedData)",JSON.parse(savedData))
+   console.log("savedDataParse",savedDataParse)
+   if (data) setValues({...data, ...savedDataParse})
+  //  console.log("data",data)
+  }, [])
+
+  useEffect(() => {
+    window.localStorage.setItem("data", JSON.stringify(data))
+    console.log(JSON.stringify(data))
+  }, [data])
 
   const handleFirstNameChange = (e) => {
     const newValue = e.target.value;
@@ -441,21 +498,36 @@ export default function ReportGenerationOnePage() {
     }
   };
 
+  
   const handleEmailChange = (e) => {
     const newValue = e.target.value;
-    // Check if email exceeds maximum length
-    if (newValue.length > 50) {
-      setEmailError(true);
-      return
-    }
-    if(newValue.trim().length === 0){
-      setEmailError2(true);
-    }else{
-      setEmailError2(false);
-    }
+    // Common regular expressions for validations
+    const emailFormatRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const restrictedCharsRegex = /[!#$%&*\/=?^`{|}~\s]/;
+  
+    // Resetting errors initially
     setEmailError(false);
-    setFormData({ ...formData, email: newValue });
-    setValues({ ...data, email: newValue }); //This update the context
+    setEmailError2(false);
+  
+    // Check if email is empty
+    if (newValue.trim().length === 0) {
+      setEmailError2(true);
+    }
+  
+    // Check if email format is correct
+    if (!emailFormatRegex.test(newValue)) {
+      setEmailError(true);
+    }
+
+    // Check for restricted characters or excessive length
+    if (restrictedCharsRegex.test(newValue) || newValue.length > 50) {
+      setEmailError(true);
+    }
+    
+  
+    // If all checks are passed, update the email in form data and context
+    setFormData(prevData => ({ ...prevData, email: newValue }));
+    setValues(prevData => ({ ...prevData, email: newValue })); // This updates the context
   };
 
    // const handleDateChange = (e) => {
@@ -556,7 +628,7 @@ export default function ReportGenerationOnePage() {
   const WithLabelExample = () => {
     const currentValue = Number(currentProgress.toFixed(2));
     if(currentProgress != 100) {return (
-      <div style={{ width: '100%', backgroundColor: '#f0f0f0', borderRadius: '5px', padding: '2px', boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.1)' }}>
+      <div className="w-full max-w-[1020px] m-auto" style={{ width: '100%', backgroundColor: '#f0f0f0', borderRadius: '5px', padding: '2px', boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.1)' }}>
         <div
           style={{
             width: `${currentValue}%`,
@@ -614,14 +686,33 @@ export default function ReportGenerationOnePage() {
         <Sidebar1 isAdmin={isAdmin} className="flex flex-col w-[78px] h-screen gap-6 top-0 py-3 bg-indigo-700 !sticky overflow-auto" />
         <div className="flex flex-col w-full justify-center gap-7">
           <div className="justify-center item-center flex flex-col max-w-[700px] m-auto mt-40 w-full gap-2">
-            <DynamicInput handleDragAndDropImagesParent={setDragAndDropImagesParent} />
+          <div className="instructions-container pb-10">
+          <button onClick={showInstructions}>Instructions<span>&#9660;</span></button>
+          {showInstructionContent && (
+            <div id="instructionContent">
+              <h1>To generate a report:</h1>
+              <ol>
+                <li>
+                  <strong>1) Upload Images:</strong> Press the "Add Pipe" button to open the dropbox, then select and upload images for analysis.
+                </li>
+                <li>
+                  <strong>2) Analyze Images:</strong> Press the "Analyze Images" button after uploading to initiate the analysis process. You will be notified when the analysis is done.
+                </li>
+                <li>
+                  <strong>3) Fill Client Information:</strong> Enter client details such as name, address, and contact information in the respective fields. Ensure all required fields are completed before proceeding with view results.
+                </li>
+              </ol>
+            </div>
+    )}
+    </div>
+            <DynamicInput handleDragAndDropImagesParent={setDragAndDropImagesParent} enableButton={enableButton}/>
           </div>
           <div className="m-auto">
             <button className="p-2 sm:px-5 font-dmsans font-bold min-w-[160px] rounded-[24px] bg-indigo-700 hover:bg-blue-400 text-white-A700" onClick={handleAnalyzeImages}>
               Analyze Images
             </button>
 
-            {barloading &&
+            {barloading && !errorScanning && !errorUploading &&
               <div className="flex justify-center mt-[20px]">
                 <FadeLoader
                   color={"303F9F"}
@@ -636,7 +727,19 @@ export default function ReportGenerationOnePage() {
 
           </div>
 
-          {barloading && <WithLabelExample />}
+          {barloading && !errorScanning && !errorUploading && <WithLabelExample />}
+
+          {errorScanning && (
+            <div className="text-center text-red-600 font-bold mt-4">
+              Failed to scan images, please try again!
+            </div>
+          )}
+
+          {errorUploading && (
+            <div className="text-center text-red-600 font-bold mt-4">
+              Failed to upload images, please try again!
+            </div>
+          )}
 
           <div className="flex flex-col gap-7 max-w-[1020px] w-full m-auto">
 
@@ -841,11 +944,11 @@ export default function ReportGenerationOnePage() {
             {/* </div> */}
           </div>
           <div className="m-auto mb-[20px]">
-            <button
-              onClick={ () => {!loading && handleSubmit()}}
+            {enableAnalyze && <button
+              onClick={ () => {enableButton && handleSubmit()}}
               className="p-2 sm:px-5 font-dmsans font-bold min-w-[159px] rounded-[24px] bg-indigo-700 hover:bg-blue-400 text-white-A700">
               View Results
-            </button>
+            </button>}
           </div>
         </div>
       </div>
@@ -854,4 +957,3 @@ export default function ReportGenerationOnePage() {
     </>
   );
 }
-

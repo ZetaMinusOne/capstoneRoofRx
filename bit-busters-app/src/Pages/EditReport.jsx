@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Button, Input, Heading, Text, Img, SelectBox } from "../components";
 // import ReportGenerationOneColumnOne from "../components/ReportGenerationOneColumnOne";
@@ -69,6 +69,20 @@ export default function EditReport() {
   const [dateError, setDateError] = useState();
 
   const [submitError, setSubmitError] = useState(false);
+
+  useEffect(() => {
+    const savedData =  window.localStorage.getItem("data")
+    const savedDataParse = savedData ? JSON.parse(savedData) : null;
+    console.log("JSON.parse(savedData)",JSON.parse(savedData))
+    console.log("savedDataParse",savedDataParse)
+    if (data) setValues({...data, ...savedDataParse})
+   //  console.log("data",data)
+   }, [])
+   
+   useEffect(() => {
+     window.localStorage.setItem("data", JSON.stringify(data))
+     console.log(JSON.stringify(data))
+   }, [data])
 
   const handleFirstNameChange = (e) => {
     const newValue = e.target.value;
@@ -231,19 +245,33 @@ export default function EditReport() {
 
   const handleEmailChange = (e) => {
     const newValue = e.target.value;
-    // Check if email exceeds maximum length
-    if (newValue.length > 50) {
-      setEmailError(true);
-      return
-    }
-    if(newValue.trim().length === 0){
-      setEmailError2(true);
-    }else{
-      setEmailError2(false);
-    }
+    // Common regular expressions for validations
+    const emailFormatRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const restrictedCharsRegex = /[!#$%&*\/=?^`{|}~\s]/;
+  
+    // Resetting errors initially
     setEmailError(false);
-    setFormData({ ...formData, email: newValue });
-    setValues({ ...data, email: newValue }); //This update the context
+    setEmailError2(false);
+  
+    // Check if email is empty
+    if (newValue.trim().length === 0) {
+      setEmailError2(true);
+    }
+  
+    // Check if email format is correct
+    if (!emailFormatRegex.test(newValue)) {
+      setEmailError(true);
+    }
+
+    // Check for restricted characters or excessive length
+    if (restrictedCharsRegex.test(newValue) || newValue.length > 50) {
+      setEmailError(true);
+    }
+    
+  
+    // If all checks are passed, update the email in form data and context
+    setFormData(prevData => ({ ...prevData, email: newValue }));
+    setValues(prevData => ({ ...prevData, email: newValue })); // This updates the context
   };
 
   // const handleDateChange = (e) => {
@@ -303,8 +331,8 @@ export default function EditReport() {
       setSubmitError(true)
       
     } else{
-        setOriginalData(data)
-        navigate("/reportgenerated", { state: { formData, isAdmin } });
+        // setOriginalData(data)
+        navigate("/reportgenerated", { state: { isAdmin } });
     }
     // try {
     //   const response = await fetch('your-api-gateway-endpoint-url', {
@@ -346,8 +374,8 @@ export default function EditReport() {
   }
 
   const handleNavigate = () =>{
-    navigate("/reportGenerated", { state: { isAdmin } });
     setValues(originalData);
+    navigate("/reportGenerated", { state: { isAdmin } });
   }
 
   console.log("Submit Error",
@@ -383,7 +411,6 @@ export default function EditReport() {
 
 
       <div className="flex justify-between items-start w-full pr-8 gap-5 sm:pr-5 bg-white-A700">
-        {console.log(formData)}
         <div className="flex justify-end w-full items-start gap-[2px] absolute top-0 rigth-0">
           <DropdownMenu />
         </div>

@@ -200,13 +200,18 @@ def handler(event, context):
                     images = data.get('images')  
 
                     # Insert the new images into the database
-                    for image in images:
-                        i_url = image.get('i_URL')
-                        is_broken = image.get('is_Broken', 0)  # Default to 0 if not provided
-                        pipe_Name = image.get('pipeName') 
-                        insert_query = "INSERT INTO Image (Report_ID, i_URL, is_Broken, pipeName) VALUES (%s, %s, %s, %s)"
-                        insert_values = (report_id, i_url, is_broken, pipe_Name)
-                        cursor.execute(insert_query, insert_values)
+                    for pipe_name, pipe_images in images.items():
+                        for image in pipe_images:
+                            i_url = image.get('url')
+                            predictions = image.get('predictions')
+                            if predictions:
+                                max_prob_index = predictions.index(max(predictions))
+                                is_broken = True if max_prob_index == 1 else False
+                            else:
+                                is_broken = False
+                            insert_query = "INSERT INTO Image (Report_ID, i_URL, is_Broken, pipeName) VALUES (%s, %s, %s, %s)"
+                            insert_values = (report_id, i_url, is_broken, pipe_name)
+                            cursor.execute(insert_query, insert_values)
                     cnx.commit()
 
                     return {
@@ -238,6 +243,7 @@ def handler(event, context):
                     },
                     'body': json.dumps({'error': 'Invalid path'})
                 }
+
 
         # elif http_method == 'PUT':
         #     # Handle PUT request to update an image

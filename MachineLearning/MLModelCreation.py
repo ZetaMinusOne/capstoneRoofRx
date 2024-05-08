@@ -2,7 +2,7 @@ import boto3
 import sagemaker.image_uris as image_uris
 
 # Specify the location of the model in S3
-model_url = 's3://bitbusters-images-and-mlmodel-data/saved_model/saved_model.tar.gz'
+model_url = 's3://bitbusters-images-and-mlmodel-data/saved_model/saved_model_versionTwo.tar.gz'
 
 # Specify the name of the model
 model_name = 'bitbusters-model-version-one'

@@ -3,7 +3,7 @@ import SignatureCanvas from "react-signature-canvas"
 import React from "react";
 
 
-export default function SignatureModal({ toggleModal, signatureCanvasRef, handleClear, handleGenerate, url, handleUrl, isSigned, handleIsEdit, isEdit }) {
+export default function SignatureModal({ toggleModal, signatureCanvasRef, handleClear, url, handleUrl, isSigned, handleIsEdit, isEdit, handleCallGenerate, handleGenerate, setEnableGenerate  }) {
 
     return (
         <>
@@ -13,7 +13,7 @@ export default function SignatureModal({ toggleModal, signatureCanvasRef, handle
                     <h1 className='mb-4'>Create your Signature</h1>
                     <div className="border-2 m-auto">
 
-                        {url === undefined || isEdit ? (
+                        {url === null || isEdit ? (
                             <SignatureCanvas
                                 penColor="black"
                                 canvasProps={{ width: 500, height: 300, className: 'sigCanvas' }}
@@ -35,22 +35,34 @@ export default function SignatureModal({ toggleModal, signatureCanvasRef, handle
                     }
 
 
-                    <div className="flex justify-start">
-                        <button className="border border-gray-500 bg-zinc-300  mr-auto w-[100px] rounded-3xl pt-1 pb-1 pl-2 pr-2 hover:bg-zinc-400 float-right" onClick={() => {handleGenerate(); handleIsEdit();}}>
-                            Sign
-                        </button>
-                        {(url === undefined || isEdit) && (
-                            <button className="border border-gray-500 bg-zinc-300  mr-auto w-[100px] rounded-3xl pt-1 pb-1 pl-2 pr-2 hover:bg-zinc-400 float-right" onClick={handleClear}>
+                    <div className="flex justify-end w-full m-auto">
+                        {!isSigned && (
+                            <button className="border m-auto border-gray-500 bg-zinc-300 w-[100px] rounded-3xl pt-1 pb-1 pl-2 pr-2 hover:bg-zinc-400 float-right" onClick={() => { handleGenerate(); handleCallGenerate(); setEnableGenerate(); }}>
+                                Sign
+                            </button>
+                        )}
+                        {(url === null || isEdit) && (
+                            <button className="border m-auto border-gray-500 bg-zinc-300 w-[100px] rounded-3xl pt-1 pb-1 pl-2 pr-2 hover:bg-zinc-400 float-right" onClick={handleClear}>
                                 Clear
                             </button>
                         )}
-                        <button className="border border-gray-500 bg-zinc-300  mr-auto w-[100px] rounded-3xl pt-1 pb-1 pl-2 pr-2 hover:bg-zinc-400 float-right" onClick={handleUrl}>
-                            Edit
-                        </button>
 
-                        <button className="border border-gray-500 bg-zinc-300  mr-auto w-[100px] rounded-3xl pt-1 pb-1 pl-2 pr-2 hover:bg-zinc-400 float-right" onClick={() => {toggleModal(); handleIsEdit(); }}>
-                            Close
-                        </button>
+                        {(!isSigned && !isEdit ) && (
+                            <button className="border m-auto border-gray-500 bg-zinc-300 w-[100px] rounded-3xl pt-1 pb-1 pl-2 pr-2 hover:bg-zinc-400 float-right" onClick={handleUrl}>
+                                Edit
+                            </button>
+                        )}
+                        {isEdit ? (
+                            <button className="border m-auto border-gray-500 bg-zinc-300 w-[100px] rounded-3xl pt-1 pb-1 pl-2 pr-2 hover:bg-zinc-400 float-right" onClick={() => {handleIsEdit(); }}>
+                                Cancel
+                            </button>
+
+                        ) : (
+                            <button className="border m-auto border-gray-500 bg-zinc-300 w-[100px] rounded-3xl pt-1 pb-1 pl-2 pr-2 hover:bg-zinc-400 float-right" onClick={() => { toggleModal(); handleIsEdit(); }}>
+                                Close
+                            </button>
+                        )
+                        }
 
                     </div>
 

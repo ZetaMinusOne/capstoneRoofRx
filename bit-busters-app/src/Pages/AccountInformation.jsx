@@ -11,6 +11,8 @@ import { Amplify } from 'aws-amplify';
 import config from '../aws-exports';
 import { downloadData, } from 'aws-amplify/storage';
 import {useLocation} from "react-router-dom";
+import CustomInput from "../components/TextBoxInput";
+import {PasswordInput} from "../components/EyeInput"
 
 Amplify.configure(config);
 
@@ -50,7 +52,7 @@ export default function PersonalInformationPage() {
   const [lastNameError, setLastNameError] = useState(false);
   const [lastNameErrorChar, setLastNameErrorChar] = useState(false);
   const [phoneNumberError, setPhoneNumberError] = useState(false);
-  const [passwordError, setPasswordError] = useState("");
+  const [passwordError, setPasswordError] = useState(false);
   const [newPasswordError, setNewPasswordError] = useState(false);
   const location = useLocation();
   const isAdmin = location.state?.isAdmin || false;
@@ -82,6 +84,8 @@ export default function PersonalInformationPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [showPassword, setShowPassword] = useState(false);
+  
   const [personalInfo, setPersonalInfo] = useState({
     firstName: "",
     lastName: "",
@@ -116,6 +120,7 @@ export default function PersonalInformationPage() {
 
   const fetchData = async () => {
     setIsLoading(true)
+    disableErrors();
     try {
       const url = `https://zs9op711v1.execute-api.us-east-1.amazonaws.com/dev/users/${userID}`;
       const response = await fetch(url);
@@ -302,7 +307,7 @@ export default function PersonalInformationPage() {
     } else {
       setPasswordIsEmpty(false)
     }
-
+    setPasswordError(false);
     setPersonalInfo({ ...personalInfo, password: newValue });
   }
 
@@ -416,78 +421,100 @@ export default function PersonalInformationPage() {
   };
 
   const handleConfirmChanges = async () => {
-
+    let hasError = false;
     if (editSignature) {
       await handleGenerate();
       setEditSignature(false);
     }
 
-    if (personalInfo.password.length !== 0 && personalInfo.newPassword.length !== 0 && personalInfo.confirmNewPassword.length !== 0 && isLengthValid && hasUppercase && hasLowercase && hasNumber && hasSpecialChar) {
-      setPersonalInfo({ ...personalInfo, password: personalInfo.newPassword, newPassword: "", confirmNewPassword: "" });
-    }
+    // if (personalInfo.password.length !== 0 && personalInfo.newPassword.length !== 0 && personalInfo.confirmNewPassword.length !== 0 && isLengthValid && hasUppercase && hasLowercase && hasNumber && hasSpecialChar) {
+    //   setPersonalInfo({ ...personalInfo, password: personalInfo.newPassword, newPassword: "", confirmNewPassword: "" });
+    // }
 
-    if (personalInfo.firstName.length === 0
-      || personalInfo.lastName.length === 0
-      || personalInfo.phoneNumber.length === 0
-      || (personalInfo.password.length !== 0 && personalInfo.newPassword.length === 0 && personalInfo.confirmNewPassword.length === 0)
-      || (personalInfo.password.length === 0 && personalInfo.newPassword.length !== 0 && personalInfo.confirmNewPassword.length === 0)
-      || (personalInfo.password.length === 0 && personalInfo.newPassword.length === 0 && personalInfo.confirmNewPassword.length !== 0)
-      || (personalInfo.password.length !== 0 && personalInfo.newPassword.length !== 0 && personalInfo.confirmNewPassword.length === 0)
-      || (personalInfo.password.length === 0 && personalInfo.newPassword.length !== 0 && personalInfo.confirmNewPassword.length !== 0)
-      || (personalInfo.password.length !== 0 && personalInfo.newPassword.length === 0 && personalInfo.confirmNewPassword.length !== 0)
-      || firstNameError
-      || firstNameErrorChar
-      || lastNameError
-      || lastNameErrorChar
-      || phoneNumberError
-      || passwordError
-      || newPasswordError
-      || (!isLengthValid && personalInfo.newPassword.length !== 0)
-      || (!hasUppercase && personalInfo.newPassword.length !== 0)
-      || (!hasLowercase && personalInfo.newPassword.length !== 0)
-      || (!hasNumber && personalInfo.newPassword.length !== 0)
-      || (!hasSpecialChar && personalInfo.newPassword.length !== 0)
-      || confirmPasswordError
-      || ((personalInfo.newPassword.length !== 0 || originalPersonalInfo.newPassword.length !== 0) &&
-        (!isLengthValid && !hasUppercase && !hasLowercase && !hasNumber && !hasSpecialChar)) || confirmPasswordError
-    ) {
-      setErrorModal(true);
-    } else {
-      setErrorModal(false);
-      setOriginalPersonalInfo(personalInfo);
-      // updateUserInformation();
-      setFirstNameError(false);
-      setFirstNameErrorChar(false);
-      setLastNameError(false);
-      setLastNameErrorChar(false);
-      setPhoneNumberError(false);
-      setPasswordError(false);
-      setPasswordIsEmpty(false);
-      setNewPasswordError(false);
-      // setIsLengthValid(false);
-      // setHasUppercase(false);
-      // setHasLowercase(false);
-      // setHasNumber(false);
-      // setHasSpecialChar(false);
-      setConfirmPasswordError(false);
-
-      try {
-        
-        setIsLoading(true);
-        await handleUpdate(); // Calls the PUT request function
-        setTimeout(() => {
-          fetchData();
-        }, 2000)
-        //setActiveModal(false); // Close modal upon success
-        //setEdit(false); // Exit edit mode
-      } catch (error) {
-        console.error('Failed to update:', error);
-        // Optionally, handle the error in UI, e.g., show an error message
+    try {
+      if (personalInfo.password.length !== 0 && personalInfo.newPassword.length !== 0 && personalInfo.confirmNewPassword.length !== 0 && personalInfo.newPassword === personalInfo.confirmNewPassword) {
+        setIsLoading(true)
+        await updatePassword({ oldPassword: personalInfo.password, newPassword: personalInfo.newPassword })
+        setIsLoading(false)
       }
+    } catch (error) {
+      // setErrorModal(true);
+      hasError = true;
+      console.log("Entering in catch")
+      setPasswordError(true);
+      console.log("Exiting catch")
+      setIsLoading(false)
     }
+    console.log("passwordError", passwordError)
 
-    if (personalInfo.password.length !== 0 && personalInfo.newPassword.length !== 0 && personalInfo.confirmNewPassword.length !== 0 && personalInfo.newPassword === personalInfo.confirmNewPassword)
-      await updatePassword({ oldPassword: personalInfo.password, newPassword: personalInfo.newPassword })
+      
+      if (!isLoading) {
+        
+        if (hasError || personalInfo.firstName.length === 0
+          || personalInfo.lastName.length === 0
+          || personalInfo.phoneNumber.length === 0
+          || (personalInfo.password.length !== 0 && personalInfo.newPassword.length === 0 && personalInfo.confirmNewPassword.length === 0)
+          || (personalInfo.password.length === 0 && personalInfo.newPassword.length !== 0 && personalInfo.confirmNewPassword.length === 0)
+          || (personalInfo.password.length === 0 && personalInfo.newPassword.length === 0 && personalInfo.confirmNewPassword.length !== 0)
+          || (personalInfo.password.length !== 0 && personalInfo.newPassword.length !== 0 && personalInfo.confirmNewPassword.length === 0)
+          || (personalInfo.password.length === 0 && personalInfo.newPassword.length !== 0 && personalInfo.confirmNewPassword.length !== 0)
+          || (personalInfo.password.length !== 0 && personalInfo.newPassword.length === 0 && personalInfo.confirmNewPassword.length !== 0)
+          || firstNameError
+          || firstNameErrorChar
+          || lastNameError
+          || lastNameErrorChar
+          || phoneNumberError
+          || passwordError
+          || newPasswordError
+          || (!isLengthValid && personalInfo.newPassword.length !== 0)
+          || (!hasUppercase && personalInfo.newPassword.length !== 0)
+          || (!hasLowercase && personalInfo.newPassword.length !== 0)
+          || (!hasNumber && personalInfo.newPassword.length !== 0)
+          || (!hasSpecialChar && personalInfo.newPassword.length !== 0)
+          || confirmPasswordError
+          || ((personalInfo.newPassword.length !== 0 || originalPersonalInfo.newPassword.length !== 0) &&
+          (!isLengthValid && !hasUppercase && !hasLowercase && !hasNumber && !hasSpecialChar)) || confirmPasswordError) 
+          {
+            console.log("Entering in if with Password Errr Value of: ", passwordError)
+            setErrorModal(true);
+          } else {
+            console.log("Entering in else with Password Errr Value of: ", passwordError)
+            disableErrors();
+            try {
+              
+              setIsLoading(true);
+              await handleUpdate(); // Calls the PUT request function
+              setTimeout(() => {
+                fetchData();
+              }, 2000)
+              //setActiveModal(false); // Close modal upon success
+              //setEdit(false); // Exit edit mode
+            } catch (error) {
+              console.error('Failed to update:', error);
+              // Optionally, handle the error in UI, e.g., show an error message
+            }
+          }
+        }
+  }
+
+  const disableErrors = () => {
+    setErrorModal(false);
+    setOriginalPersonalInfo(personalInfo);
+    // updateUserInformation();
+    setFirstNameError(false);
+    setFirstNameErrorChar(false);
+    setLastNameError(false);
+    setLastNameErrorChar(false);
+    setPhoneNumberError(false);
+    setPasswordError(false);
+    setPasswordIsEmpty(false);
+    setNewPasswordError(false);
+    setIsLengthValid(false);
+    setHasUppercase(false);
+    setHasLowercase(false);
+    setHasNumber(false);
+    setHasSpecialChar(false);
+    setConfirmPasswordError(false);
   }
 
   const handleCancel = () => {
@@ -556,7 +583,7 @@ export default function PersonalInformationPage() {
                 <div className="flex flex-col items-center w-full gap-7 ">
                   <div className="flex flex-col items-start w-full gap-7 max-w-[500px]">
                     <Text size="md" as="p" className="!text-gray-900_01 !font-poppins border-b-2 text-lg">
-                      Edit Personal Information
+                      Personal Information
                     </Text>
                   </div>
                   <div className="flex flex-col items-start w-full gap-[9px] max-w-[500px]">
@@ -567,7 +594,7 @@ export default function PersonalInformationPage() {
                   </div>
                   <div className="flex flex-col items-start w-full gap-[9px] max-w-[500px]">
                     <Heading as="h2" className="uppercase">
-                      Last Name{" "}
+                      Last Names{" "}
                     </Heading>
                     {personalInfo.lastName}
                   </div>
@@ -632,7 +659,7 @@ export default function PersonalInformationPage() {
                   </div>
                   <div className="flex flex-col items-start w-full gap-[9px] max-w-[500px]">
                     <Heading as="h2" className="uppercase">
-                      Last Name{" "}
+                      Last Names{" "}
                     </Heading>
                     <input
                       value={personalInfo.lastName}
@@ -678,23 +705,22 @@ export default function PersonalInformationPage() {
                     <Heading as="h5" className="uppercase">
                     Current Password
                     </Heading>
-                    <input
-                      onChange={(e) => {
+                    <PasswordInput
+                      handlePasswordChange={(e) => {
                         handlePassword(e);
                       }}    //This is to send this password to the database
                       placeholder={`Enter your current password `}
                       className="self-stretch sm:pr-5 font-poppins border border-gray-300 box-border rounded-[4px] h-[48px] pl-4 hover:border-blue-500 hover:shadow-md font-normal" />
-                    {/* { passwordError && <Text size="xs" className="text-red-500">Password Error</Text>} */}
+                    { passwordError && <Text size="xs" className="text-red-500">Incorrect Password</Text>}
                     {(passwordIsEmpty && personalInfo.newPassword.length !== 0) && <Text size="xs" className="text-red-500">To update your password you must write your current password.</Text>}
                   </div>
                   <div className="flex flex-col items-start gap-[9px] w-full max-w-[500px]">
                     <Heading as="h5" className="uppercase">
                       New Password
                     </Heading>
-                    <input
-                      onChange={(e) => {
+                    <PasswordInput
+                      handlePasswordChange={(e) => {
                         handleNewPasswordChange(e, 20)
-
                       }}
 
                       placeholder={`Enter your new password `}
@@ -729,14 +755,14 @@ export default function PersonalInformationPage() {
                     <Heading as="h6" className="uppercase">
                       Confirm New Password
                     </Heading>
-                    <input
-                      onChange={(e) => {
+                    <PasswordInput
+                      handlePasswordChange={(e) => {
                         handleReEnterPassword(e)
                       }}
                       placeholder={`Re-enter your new password`}
                       className="self-stretch sm:pr-5 font-poppins border border-gray-300 box-border rounded-[4px] h-[48px] pl-4 hover:border-blue-500 hover:shadow-md font-normal"
                     />
-                    {confirmPasswordError && <Text size="xs" className="text-red-500">Password does not matched.</Text>}
+                    {confirmPasswordError && <Text size="xs" className="text-red-500">Password does not match.</Text>}
                   </div>
                   <div className="flex flex-col items- gap-[9px] w-full max-w-[500px]">
                     <Heading as="h6" className="uppercase">
@@ -757,15 +783,21 @@ export default function PersonalInformationPage() {
                         )
                     }
                     <div className="flex ">
-                      <button className="border border-gray-500 bg-zinc-300 m-auto w-[100px] rounded-3xl pt-1 pb-1 pl-2 pr-2 hover:bg-zinc-400 float-right" onClick={() => { setEditSignature(true); }}>
-                        Edit
-                      </button>
-                      <button className="border border-gray-500 bg-zinc-300 m-auto w-[100px] rounded-3xl pt-1 pb-1 pl-2 pr-2 hover:bg-zinc-400 float-right" onClick={handleClear}>
-                        Clear
-                      </button>
-                      <button className="border border-gray-500 bg-zinc-300 m-auto w-[100px] rounded-3xl pt-1 pb-1 pl-2 pr-2 hover:bg-zinc-400 float-right" onClick={() => { setUrl(Url); setEditSignature(false); }}>
-                        Cancel
-                      </button>
+                      {!editSignature ? (
+                        <button className="border border-gray-500 bg-zinc-300 m-auto w-[100px] rounded-3xl pt-1 pb-1 pl-2 pr-2 hover:bg-zinc-400 float-right" onClick={() => { setEditSignature(true); }} >
+                          Edit
+                        </button>
+                      ) : (
+                        <>
+                          <button className="border border-gray-500 bg-zinc-300 m-auto w-[100px] rounded-3xl pt-1 pb-1 pl-2 pr-2 hover:bg-zinc-400 float-right" onClick={handleClear} >
+                            Clear
+                          </button>
+                          <button className="border border-gray-500 bg-zinc-300 m-auto w-[100px] rounded-3xl pt-1 pb-1 pl-2 pr-2 hover:bg-zinc-400 float-right"  onClick={() => { setUrl(Url); setEditSignature(false); }}>
+                            Cancel
+                          </button>
+                        </>
+                      )}
+
                     </div>
                   </div>
 
@@ -796,7 +828,7 @@ export default function PersonalInformationPage() {
         }
       </div>
 
-      {activeModal && <Modal toggleModal={() => setActiveModal(!activeModal)} errorModal={errorModal} toggleConfirmChanges={() => setConfirmChanges(!confirmChanges)} confirmChanges={confirmChanges} handleUpdateProfile={() => handleUpdateProfile()} handleConfirmChanges={handleConfirmChanges} />}
+      {activeModal && <Modal toggleModal={() => setActiveModal(!activeModal)} errorModal={errorModal} toggleConfirmChanges={() => setConfirmChanges(!confirmChanges)} confirmChanges={confirmChanges} handleUpdateProfile={() => handleUpdateProfile()} handleConfirmChanges={async  () => {await handleConfirmChanges();}} isLoading={isLoading}/>}
 
 
 

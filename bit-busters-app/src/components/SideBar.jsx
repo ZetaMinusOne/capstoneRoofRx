@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Img } from ".";
 import { Menu, Sidebar } from "react-pro-sidebar";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -16,6 +16,38 @@ export default function Sidebar1({ isAdmin, ...props }) {
   const handleButtonHover = (e, isHovered) => {
     e.currentTarget.style.filter = isHovered ? "brightness(20%)" : "brightness(100%)";
   };
+
+  // Function to check if the current path matches the provided path
+  const isActive = (path) => {
+    return location.pathname === path;
+  };
+
+  // Function to handle navigation with warning
+  const handleNavigation = (path) => {
+    if ((location.pathname === "/analyzeimages" || location.pathname === "/reportgenerated") && path !== location.pathname) {
+      const confirmNavigation = window.confirm("Warning: You are leaving this page. Any unsaved information will be lost. Are you sure you want to continue?");
+      if (!confirmNavigation) {
+        return;
+      }
+    }
+    navigate(path, { state: { isAdmin } });
+  };
+
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      if (location.pathname === "/analyzeimages" || location.pathname === "/reportgenerated") {
+        event.preventDefault();
+        event.returnValue = "";
+        return "Warning: You are leaving this page. Any unsaved information will be lost. Are you sure you want to continue?";
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [location.pathname]);
 
   return (
     <Sidebar
@@ -56,71 +88,51 @@ export default function Sidebar1({ isAdmin, ...props }) {
         className="flex flex-col w-full mb-[5px]"
       >
         <div className="flex flex-col">
-          <div className="flex items-center justify-between p-5 border-blue_gray-700_b2 border-b border-solid">
-          <button
-  className="flex items-center"
-  onClick={() => {
-    if (isAdmin) {
-      console.log("Admin Home clicked");
-      navigate("/adminhome", { state: { isAdmin } });
-    } else {
-      console.log("Home clicked");
-      navigate("/home", { state: { isAdmin } });
-    }
-  }}
-  style={{ color: "white" }}
-  onMouseEnter={(e) => handleButtonHover(e, true)}
-  onMouseLeave={(e) => handleButtonHover(e, false)}
->
-  <Img
-    src="/images/img_home_google.svg"
-    alt="home"
-    className="h-[30px] w-[30px]"
-  />
-  {!collapsed && (
-    <div className={`ml-2 whitespace-nowrap text-white`}>
-      {isAdmin ? "Admin Home" : "Home Page"}
-    </div>
-  )}
-</button>
-
+          <div className={`flex items-center justify-between p-5 border-blue_gray-700_b2 border-b border-solid ${isActive('/adminhome') ? 'bg-gray-800' : ''}${isActive('/home') ? 'bg-gray-800' : ''}`}>
+            <button
+              className="flex items-center"
+              onClick={() => handleNavigation(isAdmin ? "/adminhome" : "/home")}
+              style={{ color: "white" }}
+              onMouseEnter={(e) => handleButtonHover(e, true)}
+              onMouseLeave={(e) => handleButtonHover(e, false)}
+            >
+              <Img
+                src="/images/img_home_google.svg"
+                alt="home"
+                className="h-[30px] w-[30px]"
+              />
+              {!collapsed && (
+                <div className={`ml-2 whitespace-nowrap text-white`}>
+                  Home
+                </div>
+              )}
+            </button>
           </div>
-          <div className="flex items-center justify-between p-5 border-blue_gray-700_b2 border-b border-solid">
-                <button
-                className="flex items-center"
-                onClick={() => {
-                  console.log("History clicked");
-                  if (isAdmin) {
-                    navigate("/adminhistory", { state: { isAdmin } });
-                  } else {
-                    navigate("/history", { state: { isAdmin } });
-                  }
-                }}
-                style={{ color: "white" }}
-                onMouseEnter={(e) => handleButtonHover(e, true)}
-                onMouseLeave={(e) => handleButtonHover(e, false)}
-              >
-                <Img
-                  src="/images/img_history_google.svg"
-                  alt="document_one"
-                  className="h-[30px] w-[30px]"
-                />
-                {!collapsed && (
-                  <div className={`ml-2 whitespace-nowrap text-white`}>
-                    History Of Reports
-                  </div>
-                )}
-              </button>
-
+          <div className={`flex items-center justify-between p-5 border-blue_gray-700_b2 border-b border-solid ${isActive('/adminhistory') ? 'bg-gray-800' : ''}${isActive('/history') ? 'bg-gray-800' : ''}`}>
+            <button
+              className="flex items-center"
+              onClick={() => handleNavigation(isAdmin ? "/adminhistory" : "/history")}
+              style={{ color: "white" }}
+              onMouseEnter={(e) => handleButtonHover(e, true)}
+              onMouseLeave={(e) => handleButtonHover(e, false)}
+            >
+              <Img
+                src="/images/img_history_google.svg"
+                alt="document_one"
+                className="h-[30px] w-[30px]"
+              />
+              {!collapsed && (
+                <div className={`ml-2 whitespace-nowrap text-white`}>
+                  History Of Reports
+                </div>
+              )}
+            </button>
           </div>
           {isAdmin && (
-            <div className="flex items-center justify-between p-5 border-blue_gray-700_b2 border-b border-solid">
+            <div className={`flex items-center justify-between p-5 border-blue_gray-700_b2 border-b border-solid ${isActive('/manageinspectors') ? 'bg-gray-800' : ''}`}>
               <button
                 className="flex items-center"
-                onClick={() => {
-                  console.log("Inspectors clicked");
-                  navigate("/manageinspectors", { state: { isAdmin } });
-                }}
+                onClick={() => handleNavigation("/manageinspectors")}
                 style={{ color: "white" }}
                 onMouseEnter={(e) => handleButtonHover(e, true)}
                 onMouseLeave={(e) => handleButtonHover(e, false)}

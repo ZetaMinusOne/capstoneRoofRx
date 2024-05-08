@@ -6,6 +6,9 @@ import CustomInput from "../components/TextBoxInput";
 import { Amplify } from 'aws-amplify';
 import { confirmSignUp, signUp, resendSignUpCode  } from 'aws-amplify/auth';
 import config from '../amplifyconfiguration.json';
+
+import {PasswordInput} from "../components/EyeInput"
+// import { Password } from "@mui/icons-material";
 Amplify.configure(config);
 
 
@@ -284,7 +287,7 @@ export default function CreateAccountPage() {
       // Show success message and navigate to sign-in page after a short delay
       setSuccessMessage('Sign-up successful!');
       setTimeout(() => {
-        navigate('/signin');
+        navigate('/');
       }, 2000); // Delay of 2 seconds (2000 milliseconds)
     } catch (error) {
       console.error('Error confirming sign-up:', error);
@@ -307,7 +310,7 @@ export default function CreateAccountPage() {
         <meta name="description" content="Web site created using create-react-app" />
       </Helmet>
      
-      <div className="flex md:flex-col justify-end w-full pb-7 sm:pb-5 overflow-auto bg-white-A700">
+      <div className="flex md:flex-col justify-end w-full pb-7 sm:pb-5 bg-white-A700">
         <div className="h-[950px] w-full mt-[0px] mb-[90px] relative">
           <div className="justify-center h-[1300px] w-full left-0 bottom-0 right-0 top-0 m-auto border-gray-200 border-r-[0.5px] border-solid bg-gray-800 absolute" />
           <div className="justify-center h-[1300px] w-full left-0 bottom-0 right-0 top-0 m-auto absolute">
@@ -318,7 +321,7 @@ export default function CreateAccountPage() {
             />
             <div className="flex flex-col  items-end gap-[25px] left-[7%] top-[14%] m-auto absolute">
               <Heading size="xl" as="h1" className="!text-white-A700 tracking-[-0.40px] !font-dmsans">
-                Welcome to “Bit Buster”!
+                Welcome to Bit Busters!
               </Heading>
               <Text size="s" as="p" className="mr-[66px] md:mr-0 !text-white-A700 !font-inter">
               </Text>
@@ -327,9 +330,9 @@ export default function CreateAccountPage() {
         </div>
         <div className="w-full md:p-5">
           <div className="flex flex-col items-center justify-end px-14 py-[10px] md:p-5">
-            <div className="flex flex-col items-center w-[50%] md:w-full mt-[100px] gap-[25px]">
+            <div className="flex flex-col items-center w-[85%] md:w-full mt-[100px] gap-[25px]">
               <Text as="p" className="!text-gray-900_01 !font-medium">
-                Account info
+                Account Information
               </Text>
               <div className="flex sm:flex-col gap-5 self-stretch">
                 <div className="flex flex-col  w-full sm:w-full gap-[9px]">
@@ -399,13 +402,13 @@ export default function CreateAccountPage() {
                 <Heading as="h6" className="uppercase">
                   Password
                 </Heading>
-                <CustomInput
+                <PasswordInput
                   shape="round"
                   type="password"
                   name="password"
                   value={password}
                   placeholder={`Enter your password`}
-                  onChange={(e) => handlePasswordChange(e, 20)} // Specify maximum length as 20
+                  handlePasswordChange={(e) => handlePasswordChange(e, 20)} // Specify maximum length as 20
                   className="sm:pr-5 border-2 border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-blue-500 hover:border-blue-500 hover:shadow-md"
                 />
                 <div className="flex items-center">
@@ -435,12 +438,12 @@ export default function CreateAccountPage() {
               <Heading as="p" className="uppercase">
                 Confirm Password
               </Heading>
-              <CustomInput
+              <PasswordInput
                 shape="round"
                 type="password"
                 name="confirmpassword"
                 value={confirmPassword}
-                onChange={handleConfirmPasswordChange}
+                handlePasswordChange={handleConfirmPasswordChange}
                 placeholder={`Re-enter your password`}
                 className="sm:pr-5 border-2 border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-blue-500 hover:border-blue-500 hover:shadow-md"
               />
@@ -474,7 +477,7 @@ export default function CreateAccountPage() {
                 <Button
                   className="!text-blue_gray-700 !font-inter mt-4 text-center hover:text-blue-900 cursor-pointer bg-transparent hover:underline focus:outline-none"
                   onClick={() => {
-                    navigate("/signin")
+                    navigate("/")
                   }}
                 >
                   Already have an account? Sign In

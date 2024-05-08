@@ -8,7 +8,7 @@ const variants = {
   tarOutlineBlack900: "border-black-900 border-2 border-solid",
 };
 const sizes = {
-  xs: "h-[135px] w-[900px] p-4 text-sm",
+  xs: "h-[135px] w-full p-4 text-sm",
 };
 
 const TextArea = React.forwardRef(
@@ -36,7 +36,6 @@ const TextArea = React.forwardRef(
 
     return (
       <div className="relative">
-        <div className="relative">
           <textarea
             ref={ref}
             className={`${className} ${(shape && shapes[shape]) || ""} ${
@@ -49,12 +48,12 @@ const TextArea = React.forwardRef(
             {...restProps}
           />
           <div
-            className="absolute left-[730px] bottom-2 right-0 text-gray-500 text-xs pointer-events-none"
+            className="flex justify-end w-full pr-5 absolute bottom-2 text-gray-500 text-xs pointer-events-none"
+            // flex justify-end w-full items-start gap-[2px] absolute top-0 rigth-0
             style={{ zIndex: 1 }}
           >
             {charCount}/{maxLength} characters
           </div>
-        </div>
       </div>
     );
   }
@@ -65,7 +64,7 @@ TextArea.propTypes = {
   name: PropTypes.string,
   placeholder: PropTypes.string,
   shape: PropTypes.oneOf(["round"]),
-  size: PropTypes.oneOf(["xs"]),
+  // size: PropTypes.oneOf(["xs"]),
   variant: PropTypes.oneOf(["tarOutlineBlack900"]),
   maxLength: PropTypes.number,
 };

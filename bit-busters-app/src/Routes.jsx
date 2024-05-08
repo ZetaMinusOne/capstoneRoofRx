@@ -1,6 +1,5 @@
 import React from "react";
 import { useRoutes } from "react-router-dom";
-import Home from "./Pages/NavMenu";
 import NotFound from "./Pages/NotFound";
 import SignUpPage from "./Pages/SignUp";
 import Signinpage from "./Pages/SignIn";
@@ -38,7 +37,7 @@ const ProjectRoutes = () => {
     inspectorEmail: "",
     comments: "",
     images: [],
-    date: new Date().toLocaleDateString(), // Get current date
+    date: "", // Get current date
     pdfBase64: "",
     // pipe2: "not broken",
     // pipe3: "broken",
@@ -51,19 +50,17 @@ const ProjectRoutes = () => {
 
 
   let element = useRoutes([
-    { path: "/", element: <Home /> },
+    { path: "/", element: <Signinpage /> },
     { path: "*", element: <NotFound /> },
     {
       path: "/signup",
       element: <SignUpPage />,
     },
     {
-      path: "/signin",
-      element: <Signinpage />,
-    },
-    {
       path: "/adminhome",
-      element: <AdminHomePage />,
+      element: <reportGenerationContext.Provider value={{ data, setValues: setData }}>
+      <AdminHomePage />
+      </reportGenerationContext.Provider>,
     },
     {
       path: "/analyzeimages",
@@ -79,7 +76,8 @@ const ProjectRoutes = () => {
 
     {
       path: "/home",
-      element: <Homepage />,
+      element: <reportGenerationContext.Provider value={{ data, setValues: setData }}><Homepage />
+      </reportGenerationContext.Provider>,
     },
     {
       path: "/history",

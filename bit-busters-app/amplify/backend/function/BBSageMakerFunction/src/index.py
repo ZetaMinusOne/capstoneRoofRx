@@ -28,9 +28,23 @@ def download_and_preprocess_image(url):
         raise Exception(f"Failed to download image. Status code: {response['ResponseMetadata']['HTTPStatusCode']}")
         
     image_data = response['Body'].read()
-    
-    # Open the image using PIL
-    image = Image.open(BytesIO(image_data))
+
+
+    try:
+        # Open the image using PIL
+        image = Image.open(BytesIO(image_data))
+    except Exception as e:
+        # Handle any exceptions and return an error response
+        return {
+            'statusCode': 500,
+            'headers': {
+                'Access-Control-Allow-Headers': '*',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'POST, PUT, DELETE'
+            }, 
+            'body': str(e)
+        }
+
     # Convert the image mode to RGB
     image = image.convert('RGB')
     # Resize the image to match the model's input size (200x200)
@@ -43,6 +57,18 @@ def download_and_preprocess_image(url):
 def invoke_endpoint(url):
     # Download and preprocess image from URL
     processed_image = download_and_preprocess_image(url)
+
+    # Check if processed_image is None
+    if processed_image is None:
+        return {
+            'statusCode': 500,
+            'headers': {
+                'Access-Control-Allow-Headers': '*',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'POST, PUT, DELETE'
+            }, 
+            'body': 'Failed to process image'
+        }
 
     # Invoke the SageMaker endpoint with the processed image data
     response = sagemaker_client.invoke_endpoint(
@@ -104,7 +130,8 @@ def handler(event, context):
             return{
                 'statusCode': 400,
                 'headers': {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
                 },
                 'body': json.dumps({'message': f'Invalid CRUD Operation: {http_method} (Expects POST)'})
             }
@@ -113,5 +140,10 @@ def handler(event, context):
         # Handle any exceptions and return an error response
         return {
             'statusCode': 500,
+            'headers': {
+                'Access-Control-Allow-Headers': '*',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'POST, PUT, DELETE'
+            }, 
             'body': str(e)
         }

@@ -48,7 +48,7 @@ def handler(event, context):
                         INNER JOIN Address ON Client.Address_ID = Address.Address_ID
                         WHERE
                             Report.User_ID = %s
-                        ORDER BY Report.r_Date DESC
+                        ORDER BY Report.r_Date DESC, Report.Report_ID DESC;
                     """
                     cursor.execute(query, (user_id,))
                     table_data = []
@@ -57,7 +57,7 @@ def handler(event, context):
                             'Report_ID': row[0],
                             'Client_FirstName': row[1],
                             'Client_LastName': row[2],
-                            'r_Date': row[3].strftime('%Y-%m-%d'), 
+                            'r_Date': row[3].strftime('%Y/%m/%d') if row[3] is not None else None, 
                             'Address': row[4],
                             'Report_URL': row[5]
                         }
@@ -89,7 +89,7 @@ def handler(event, context):
                     INNER JOIN User ON Report.User_ID = User.User_ID
                     INNER JOIN Client ON Report.Client_ID = Client.Client_ID
                     INNER JOIN Address ON Client.Address_ID = Address.Address_ID
-                    ORDER BY Report.r_Date DESC
+                    ORDER BY Report.r_Date DESC, Report.Report_ID DESC;
                 """
 
                 cursor.execute(query)
@@ -101,7 +101,7 @@ def handler(event, context):
                         'User_LastName': row[2],
                         'Client_FirstName': row[3],
                         'Client_LastName': row[4],
-                        'r_Date': row[5].strftime('%Y-%m-%d'), 
+                        'r_Date': row[5].strftime('%Y/%m/%d') if row[5] is not None else None, 
                         'Address': row[6],
                         'Report_URL': row[7]
                     }

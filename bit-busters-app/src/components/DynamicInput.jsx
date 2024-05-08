@@ -77,18 +77,30 @@ export default function DynamicInput(props) {
     return (
         <>
 
-            {dragAndDropImages.map((data, i) => {
-                console.log("Data mapped",data)
-                return (
-                    <div key={i}>
-                        <DragAndDrop pipeIndex={i} pipeNumbers={pipeNumbers[i]} addToImageList = {addToImageList} deleteFromImageList = {deleteFromImageList} images ={dragAndDropImages[i]}/>
-                        <button className=" text-white-A700 bg-red-600 hover:bg-red-400 w-[150px] border rounded-3xl justify-center p-2" 
-                        // onClick={() => { handleDelete(i)}}>
-                        onClick={() => {handleIndex(i); setModal(!modal)}}> 
-                            {`Delete Pipe #${pipeNumbers[i]}`}</button>
-                    </div>
-                )
-            })}
+{dragAndDropImages.map((data, i) => {
+    console.log("Data mapped", data);
+    return (
+        <div key={i}>
+            <DragAndDrop
+                pipeIndex={i}
+                pipeNumbers={pipeNumbers[i]}
+                addToImageList={addToImageList}
+                deleteFromImageList={deleteFromImageList}
+                images={dragAndDropImages[i]}
+                enableButton= {props.enableButton}
+            />
+            <button
+                className="text-white-A700 bg-red-600 hover:bg-red-400 w-[150px] border rounded-3xl justify-center p-2"
+                onClick={() => (!props.enableButton ? null : (handleIndex(i), setModal(!modal)))}
+                disabled={!props.enableButton}
+            >
+                {`Delete Pipe #${pipeNumbers[i]}`}
+            </button>
+        </div>
+    );
+})}
+
+
             <span className="m-auto">
                 <button className=" text-white-A700 bg-lime-600 hover:bg-lime-400 w-[150px] border rounded-3xl justify-center p-2" onClick={() => {
                     handleAdd()

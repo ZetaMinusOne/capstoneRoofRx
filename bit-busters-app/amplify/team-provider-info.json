@@ -27,23 +27,23 @@
         },
         "BBclientHandler": {
           "deploymentBucketName": "amplify-bitbusters-dev-193521-deployment",
-          "s3Key": "amplify-builds/BBclientHandler-67345369774b58536845-build.zip"
+          "s3Key": "amplify-builds/BBclientHandler-4f46464f6973452b5a43-build.zip"
         },
         "BBreportHandler": {
           "deploymentBucketName": "amplify-bitbusters-dev-193521-deployment",
-          "s3Key": "amplify-builds/BBreportHandler-5744594d716258532b6d-build.zip"
+          "s3Key": "amplify-builds/BBreportHandler-49486a6d365939644a56-build.zip"
         },
         "BBimageHandler": {
           "deploymentBucketName": "amplify-bitbusters-dev-193521-deployment",
-          "s3Key": "amplify-builds/BBimageHandler-62705a6556314454364c-build.zip"
+          "s3Key": "amplify-builds/BBimageHandler-336f48306662764a4152-build.zip"
         },
         "BBStoreDeleteS3": {
           "deploymentBucketName": "amplify-bitbusters-dev-193521-deployment",
-          "s3Key": "amplify-builds/BBStoreDeleteS3-367272555747684e7765-build.zip"
+          "s3Key": "amplify-builds/BBStoreDeleteS3-52557032344841445948-build.zip"
         },
         "BBuserHandler": {
           "deploymentBucketName": "amplify-bitbusters-dev-193521-deployment",
-          "s3Key": "amplify-builds/BBuserHandler-656b3248615073556675-build.zip"
+          "s3Key": "amplify-builds/BBuserHandler-665631324654554b3375-build.zip"
         },
         "BBadminHandler": {
           "deploymentBucketName": "amplify-bitbusters-dev-193521-deployment",
@@ -51,7 +51,7 @@
         },
         "BBSageMakerFunction": {
           "deploymentBucketName": "amplify-bitbusters-dev-193521-deployment",
-          "s3Key": "amplify-builds/BBSageMakerFunction-7645496c367235485865-build.zip"
+          "s3Key": "amplify-builds/BBSageMakerFunction-594b59762f344b636553-build.zip"
         },
         "bitbustersUserpoolDev": {},
         "AdminQueries7e53f78a": {
@@ -79,49 +79,6 @@
           "region": "us-east-1"
         },
         "s390410288": {}
-      }
-    }
-  },
-  "devtwo": {
-    "awscloudformation": {
-      "AuthRoleName": "amplify-bitbusters-devtwo-1c500-authRole",
-      "UnauthRoleArn": "arn:aws:iam::136169402703:role/amplify-bitbusters-devtwo-1c500-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::136169402703:role/amplify-bitbusters-devtwo-1c500-authRole",
-      "Region": "us-east-1",
-      "DeploymentBucketName": "amplify-bitbusters-devtwo-1c500-deployment",
-      "UnauthRoleName": "amplify-bitbusters-devtwo-1c500-unauthRole",
-      "StackName": "amplify-bitbusters-devtwo-1c500",
-      "StackId": "arn:aws:cloudformation:us-east-1:136169402703:stack/amplify-bitbusters-devtwo-1c500/88ba4610-04b7-11ef-9d86-0affff359b51",
-      "AmplifyAppId": "d24hh9ejdib9yd"
-    },
-    "categories": {
-      "function": {
-        "BBSageMakerFunction": {},
-        "BBStoreDeleteS3": {},
-        "BBaddressHandler": {},
-        "BBadminHandler": {},
-        "BBclientHandler": {},
-        "BBimageHandler": {},
-        "BBreportHandler": {},
-        "BBuserHandler": {},
-        "bitbustersUserpoolDevCustomMessage": {},
-        "bitbustersUserpoolDevPreAuthentication": {},
-        "bitbustersUserpoolDevPreSignup": {},
-        "bitbustersUserpoolDev": {}
-      },
-      "storage": {
-        "bitbusters33eea018": {
-          "bucketName": "bitbusters-images-and-mlmodel-data",
-          "region": "us-east-1"
-        }
-      },
-      "auth": {
-        "bitbusters39dbd7a3": {
-          "userPoolId": "us-east-1_p84HptJlj",
-          "userPoolName": "bitbusters-userpool-dev-dev",
-          "webClientId": "2r5v6glhjdfhk8qhvs91e84ndo",
-          "nativeClientId": "6ohcjbbqq0ecnuagf06vg089or"
-        }
       }
     }
   }

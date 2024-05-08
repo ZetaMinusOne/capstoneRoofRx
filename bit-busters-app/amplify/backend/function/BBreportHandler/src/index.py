@@ -43,7 +43,7 @@ def handler(event, context):
                             'Report_ID': report_data[0],
                             'User_ID': report_data[1],
                             'Client_ID': report_data[2],
-                            'r_Date': report_data[3].strftime('%Y-%m-%d'),
+                            'r_Date': report_data[3].strftime('%Y/%m/%d') if row[3] is not None else None,
                             'Price': report_data[4],
                             'NumberOfBrokenPipes': report_data[5],
                             'InspectorComments': report_data[6],
@@ -79,7 +79,7 @@ def handler(event, context):
                         'Report_ID': row[0],
                         'User_ID': row[1],
                         'Client_ID': row[2],
-                        'r_Date': row[3].strftime('%Y-%m-%d'),
+                        'r_Date': row[3].strftime('%Y/%m/%d') if row[3] is not None else None,
                         'Price': row[4],
                         'NumberOfBrokenPipes': row[5],
                         'InspectorComments': row[6],
@@ -123,7 +123,7 @@ def handler(event, context):
                 report_url = data.get('Report_URL') # It will be set as null if not provided
 
                 # Convert r_Date string to datetime object
-                r_date = datetime.strptime(r_date, '%Y-%m-%d')
+                r_date = datetime.strptime(r_date, '%m/%d/%Y')
 
                 # Insert the new report into the database
                 insert_query = "INSERT INTO Report (User_ID, Client_ID, r_Date, Price, NumberOfBrokenPipes, InspectorComments, is_Signed, Report_URL) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
@@ -144,7 +144,7 @@ def handler(event, context):
                     'Report_ID': created_report[0],
                     'User_ID': created_report[1],
                     'Client_ID': created_report[2],
-                    'r_Date': created_report[3].strftime('%Y-%m-%d'),
+                    'r_Date': created_report[3].strftime('%m/%d/%Y'),
                     'Price': created_report[4],
                     'NumberOfBrokenPipes': created_report[5],
                     'InspectorComments': created_report[6],
@@ -211,7 +211,7 @@ def handler(event, context):
                     report_url = data.get('Report_URL')
 
                     # Convert r_Date string to datetime object
-                    r_date = datetime.strptime(r_date, '%Y-%m-%d')
+                    r_date = datetime.strptime(r_date, '%m/%d/%Y')
 
                     if any(value is None for value in [user_id, client_id, r_date, price, num_broken_pipes, inspector_comments, report_url]):
                         return {
@@ -239,7 +239,7 @@ def handler(event, context):
                         'Report_ID': updated_report[0],
                         'User_ID': updated_report[1],
                         'Client_ID': updated_report[2],
-                        'r_Date': updated_report[3].strftime('%Y-%m-%d'),
+                        'r_Date': updated_report[3].strftime('%m/%d/%Y'),
                         'Price': updated_report[4],
                         'NumberOfBrokenPipes': updated_report[5],
                         'InspectorComments': updated_report[6],

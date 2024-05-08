@@ -201,7 +201,8 @@ export default function HistoryOfReports() {
 
   const handleReportsButtonClick = (firstname, lastName) => {
     const name = firstname + " " + lastName;
-    navigate(`/adminhistory/${name}`);
+    navigate(`/adminhistory/${name}`, { state: { isAdmin } });
+    // navigate("/analyzeimages", { state: { formData, isAdmin } });
   };
 
 
