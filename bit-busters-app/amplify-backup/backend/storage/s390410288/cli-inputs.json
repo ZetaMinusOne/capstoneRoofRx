@@ -1,0 +1,13 @@
+{
+  "resourceName": "s390410288",
+  "policyUUID": "90410288",
+  "bucketName": "bbbucket",
+  "storageAccess": "auth",
+  "guestAccess": [],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "triggerFunction": "NONE"
+}

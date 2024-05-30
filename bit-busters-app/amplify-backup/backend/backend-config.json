@@ -1,0 +1,456 @@
+{
+  "api": {
+    "AdminQueries": {
+      "authorizationType": "AMAZON_COGNITO_USER_POOLS",
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "bitbustersUserpoolDev"
+        },
+        {
+          "attributes": [
+            "Arn",
+            "Name"
+          ],
+          "category": "function",
+          "resourceName": "AdminQueries7e53f78a"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "BBdatabaseAPI": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "BBaddressHandler"
+        },
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "BBclientHandler"
+        },
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "BBreportHandler"
+        },
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "BBimageHandler"
+        },
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "BBStoreDeleteS3"
+        },
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "BBuserHandler"
+        },
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "BBadminHandler"
+        },
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "BBSageMakerFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    }
+  },
+  "auth": {
+    "bitbustersUserpoolDev": {
+      "customAuth": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "Arn",
+            "Name"
+          ],
+          "category": "function",
+          "resourceName": "bitbustersUserpoolDevCustomMessage",
+          "triggerProvider": "Cognito"
+        }
+      ],
+      "frontendAuthConfig": {
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyCharacters": [],
+          "passwordPolicyMinLength": 8
+        },
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "socialProviders": [],
+        "usernameAttributes": [
+          "EMAIL"
+        ],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito"
+    },
+    "userPoolGroups": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId",
+            "AppClientIDWeb",
+            "AppClientID",
+            "IdentityPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "bitbustersUserpoolDev"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito-UserPool-Groups"
+    }
+  },
+  "function": {
+    "AdminQueries7e53f78a": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "bitbustersUserpoolDev"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "BBSageMakerFunction": {
+      "build": true,
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "BBStoreDeleteS3": {
+      "build": true,
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "BBaddressHandler": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "BBadminHandler": {
+      "build": true,
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "BBclientHandler": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "BBimageHandler": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "BBreportHandler": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "BBuserHandler": {
+      "build": true,
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "bitbustersUserpoolDevCustomMessage": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_auth_bitbusters39dbd7a3_nativeClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "bitbusters39dbd7a3"
+        }
+      ]
+    },
+    "AMPLIFY_auth_bitbusters39dbd7a3_userPoolId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "bitbusters39dbd7a3"
+        }
+      ]
+    },
+    "AMPLIFY_auth_bitbusters39dbd7a3_userPoolName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "bitbusters39dbd7a3"
+        }
+      ]
+    },
+    "AMPLIFY_auth_bitbusters39dbd7a3_webClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "bitbusters39dbd7a3"
+        }
+      ]
+    },
+    "AMPLIFY_function_AdminQueries7e53f78a_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "AdminQueries7e53f78a"
+        }
+      ]
+    },
+    "AMPLIFY_function_AdminQueries7e53f78a_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "AdminQueries7e53f78a"
+        }
+      ]
+    },
+    "AMPLIFY_function_BBSageMakerFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "BBSageMakerFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_BBSageMakerFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "BBSageMakerFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_BBStoreDeleteS3_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "BBStoreDeleteS3"
+        }
+      ]
+    },
+    "AMPLIFY_function_BBStoreDeleteS3_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "BBStoreDeleteS3"
+        }
+      ]
+    },
+    "AMPLIFY_function_BBaddressHandler_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "BBaddressHandler"
+        }
+      ]
+    },
+    "AMPLIFY_function_BBaddressHandler_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "BBaddressHandler"
+        }
+      ]
+    },
+    "AMPLIFY_function_BBadminHandler_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "BBadminHandler"
+        }
+      ]
+    },
+    "AMPLIFY_function_BBadminHandler_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "BBadminHandler"
+        }
+      ]
+    },
+    "AMPLIFY_function_BBclientHandler_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "BBclientHandler"
+        }
+      ]
+    },
+    "AMPLIFY_function_BBclientHandler_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "BBclientHandler"
+        }
+      ]
+    },
+    "AMPLIFY_function_BBimageHandler_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "BBimageHandler"
+        }
+      ]
+    },
+    "AMPLIFY_function_BBimageHandler_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "BBimageHandler"
+        }
+      ]
+    },
+    "AMPLIFY_function_BBreportHandler_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "BBreportHandler"
+        }
+      ]
+    },
+    "AMPLIFY_function_BBreportHandler_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "BBreportHandler"
+        }
+      ]
+    },
+    "AMPLIFY_function_BBuserHandler_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "BBuserHandler"
+        }
+      ]
+    },
+    "AMPLIFY_function_BBuserHandler_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "BBuserHandler"
+        }
+      ]
+    },
+    "AMPLIFY_function_bitbustersUserpoolDevCustomMessage_EMAILMESSAGE": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "bitbustersUserpoolDevCustomMessage"
+        }
+      ]
+    },
+    "AMPLIFY_function_bitbustersUserpoolDevCustomMessage_EMAILSUBJECT": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "bitbustersUserpoolDevCustomMessage"
+        }
+      ]
+    },
+    "AMPLIFY_function_bitbustersUserpoolDevCustomMessage_REDIRECTURL": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "bitbustersUserpoolDevCustomMessage"
+        }
+      ]
+    },
+    "AMPLIFY_function_bitbustersUserpoolDevCustomMessage_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "bitbustersUserpoolDevCustomMessage"
+        }
+      ]
+    },
+    "AMPLIFY_function_bitbustersUserpoolDevCustomMessage_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "bitbustersUserpoolDevCustomMessage"
+        }
+      ]
+    },
+    "AMPLIFY_storage_bitbusters4467635e_bucketName": {
+      "usedBy": [
+        {
+          "category": "storage",
+          "resourceName": "bitbusters4467635e"
+        }
+      ]
+    },
+    "AMPLIFY_storage_bitbusters4467635e_region": {
+      "usedBy": [
+        {
+          "category": "storage",
+          "resourceName": "bitbusters4467635e"
+        }
+      ]
+    }
+  },
+  "storage": {
+    "s390410288": {
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "S3"
+    }
+  }
+}
