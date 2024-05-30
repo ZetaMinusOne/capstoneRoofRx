@@ -100,6 +100,24 @@ export default function MainpagePage() {
                 >
                 Start New Report
               </Button>
+              <Button
+                  size="lg"
+                  className="max-h-[401px] leading-4 w-full max-w-[401px] m-auto rounded-[20px] dark_navy_blue hover:bg-blue-500 focus:outline-none focus:bg-blue-900 shadow-md text-white font-bold"
+                  onClick={() => {
+                    navigate("/reportgenerationtiles", { state: { isAdmin } });
+                  }}
+                  >
+                  Start New Report Tiles
+                </Button>
+                <Button
+                  size="lg"
+                  className="max-h-[401px] leading-4 w-full max-w-[401px] m-auto rounded-[20px] dark_navy_blue hover:bg-blue-500 focus:outline-none focus:bg-blue-900 shadow-md text-white font-bold"
+                  onClick={() => {
+                    navigate("/reportgenerationshingles", { state: { isAdmin } });
+                  }}
+                  >
+                  Start New Report Shingles
+                </Button>
                 <Button
                   size="lg"
                   className="max-h-[401px] leading-4 w-full max-w-[401px] rounded-[20px] m-auto dark_navy_blue hover:bg-blue-500 focus:outline-none focus:bg-blue-900 shadow-md text-white font-bold"

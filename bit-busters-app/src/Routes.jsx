@@ -10,6 +10,9 @@ import Homepage from "./Pages/Home";
 import HistoryOfReports from "./Pages/HistoryOfReports"
 import AccountInformationPage from "./Pages/AccountInformation"
 import ReportGeneratedPage from "./Pages/ReportGenerated"
+import ReportGeneratedTilesPage from "./Pages/ReportGenerationTiles"
+import ReportGeneratedShinglesPage from "./Pages/ReportGenerationShingles"
+
 import ReportGenerationPage from "./Pages/ReportGeneration"
 import EditReport from "./Pages/EditReport"
 import ManageInspectorsPage from "./Pages/ManageInspectors"
@@ -99,6 +102,19 @@ const ProjectRoutes = () => {
       path: "/reportgenerated",
       element: <reportGenerationContext.Provider value={{ data, setValues: setData }}>
         <ReportGeneratedPage />
+      </reportGenerationContext.Provider>,
+    },
+    {
+      path: "/reportgenerationtiles",
+      element: <reportGenerationContext.Provider value={{ data, setValues: setData }}>
+        <ReportGeneratedTilesPage />
+      </reportGenerationContext.Provider>,
+
+    },
+    {
+      path: "/reportgenerationshingles",
+      element: <reportGenerationContext.Provider value={{ data, setValues: setData }}>
+        <ReportGeneratedShinglesPage />
       </reportGenerationContext.Provider>,
     },
     {

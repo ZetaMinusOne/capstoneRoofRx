@@ -11,7 +11,7 @@ import { reportGenerationContext } from "../components/Context";
 import Modal from "../components/Modals/ReportGenerationModal";
 
 
-export default function ReportGenerationOnePage() {
+export default function ReportGeneratedTilesPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const isAdmin = location.state?.isAdmin || false;

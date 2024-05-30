@@ -11,7 +11,7 @@ import { reportGenerationContext } from "../components/Context";
 import Modal from "../components/Modals/ReportGenerationModal";
 
 
-export default function ReportGenerationOnePage() {
+export default function ReportGeneratedShinglesPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const isAdmin = location.state?.isAdmin || false;
@@ -127,12 +127,16 @@ export default function ReportGenerationOnePage() {
     return new Promise((resolve, reject) => {
       try {
         console.log("Calling The ML Model");
-        fetch('https://zs9op711v1.execute-api.us-east-1.amazonaws.com/dev/mlmodel', {
+        const formData = new FormData();
+        formData.append('image', pipeInfo);
+        formData.append('model','shingles');
+
+        fetch('https://aro53nc5zg.execute-api.us-east-1.amazonaws.com/upload', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({pipeInfo}),
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+          body: formData,
         })
           .then((response) => {
             console.log("THIS IS THE ML MODEL FETCH RESPONSE:", response);
@@ -310,7 +314,7 @@ export default function ReportGenerationOnePage() {
 
       console.log("Result to Call the Model:", uploadedUrls);
 
-      const modelResponse = await handleModelStructure(uploadedUrls);
+      const modelResponse = await handleModelStructure(dragAndDropImagesParent);
 
       setValues(data => ({ ...data, images: modelResponse }));
 
