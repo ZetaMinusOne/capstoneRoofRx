@@ -1,5 +1,0 @@
-{
-  "httpMethod": "POST",
-  "body": "{\"User_ID\": 1, \"Client_ID\": 2, \"r_Date\": \"2024-04-06\", \"NumberOfBrokenPipes\": 2, \"InspectorComments\": \"Needs maintenance\", \"is_Signed\": 1}"
-}
-

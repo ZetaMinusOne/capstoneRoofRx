@@ -1,7 +1,0 @@
-{
-    "httpMethod": "GET",
-    "pathParameters": {
-        "proxy": "3"
-    }
-}
-  

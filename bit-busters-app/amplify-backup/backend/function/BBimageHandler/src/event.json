@@ -1,6 +1,0 @@
-{
-    "httpMethod": "POST",
-    "path": "/images",
-    "body": "{\"Report_ID\": \"3\", \"images\": [{\"i_URL\": \"http://example.com/image7.jpg\", \"is_Broken\": 0, \"pipeName\": \"Pipe1\"}, {\"i_URL\": \"http://example.com/image8.jpg\", \"is_Broken\": 1, \"pipeName\": \"Pipe2\"}]}"
-}
-  
