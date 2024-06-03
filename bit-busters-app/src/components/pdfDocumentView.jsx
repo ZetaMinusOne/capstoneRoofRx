@@ -2,6 +2,7 @@ import { Document, Page, Text, View, Image, StyleSheet, } from "@react-pdf/rende
 import { useContext, useState, useEffect } from "react";
 import { reportGenerationContext } from "./Context";
 import { downloadData, } from 'aws-amplify/storage';
+import AWS from 'aws-sdk'
 
 
 const styles = StyleSheet.create({
@@ -89,12 +90,12 @@ const styles = StyleSheet.create({
 
 });
 
-const PDFDocument = ({ signature, isSigned}) => {
+const PDFDocument = ({ signature, isSigned }) => {
 
     const { data, setValues } = useContext(reportGenerationContext);
 
     console.log("IMAGES PDFDOCUMENT VIEW", data.images);
-    
+
     const [blob, setBlob] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [imagePaths, setImagePaths] = useState({});
@@ -143,31 +144,31 @@ const PDFDocument = ({ signature, isSigned}) => {
     // const saveUrlsFromS3AndCalculateBrokenPipes = async () => {
     //     const allUsableUrls = {};
     //     let brokenPipeCount = 0;
-    
+
     //     // Use for...of for proper handling of async/await inside loops
     //     for (const [pipeKey, pipeArray] of Object.entries(data.images)) {
     //         const usableUrls = [];
     //         let pipeIsBroken = false;
-    
+
     //         // Loop through each item in the pipeArray
     //         for (const pipe of pipeArray) {
     //             const url = pipe.url;
     //             const parts = url.split('/');
     //             const bucket_name = parts[2].split('.')[0];
     //             const objectKey = parts.slice(4).join('/');
-    
+
     //             try {
     //                 const downloadResult = await downloadData({ key: objectKey }).result;
     //                 const blobThing = await downloadResult.body.blob();
     //                 const localUrl = URL.createObjectURL(blobThing);
-    
+
     //                 // Assume predictions are also part of the `pipe` object
     //                 const predictions = pipe.predictions;
     //                 usableUrls.push({
     //                     predictions: predictions,
     //                     url: localUrl
     //                 });
-    
+
     //                 // Update pipe broken status if not already broken
     //                 if (!pipeIsBroken && predictions[0] < predictions[1]) {
     //                     pipeIsBroken = true;
@@ -177,120 +178,156 @@ const PDFDocument = ({ signature, isSigned}) => {
     //                 continue;
     //             }
     //         }
-    
+
     //         allUsableUrls[pipeKey] = usableUrls;
-    
+
     //         // If the pipe is broken, increment the broken pipe count
     //         if (pipeIsBroken) {
     //             brokenPipeCount++;
     //         }
     //     }
-    
+
     //     // Set the URLs and the number of broken pipes
     //     setImagePaths(allUsableUrls);
     //     setValues(prevData => ({ ...prevData, brokenPipeCount }));
-    
+
     //     console.log("ALL USABLE URLS", allUsableUrls);
     //     console.log("Number of Broken Pipes:", brokenPipeCount);
     // }
-    
+
     const convertUrlToDataUri = async (url) => {
         const response = await fetch(url);
         const blob = await response.blob();
         return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result);
-          reader.onerror = () => reject(reader.error);
-          reader.readAsDataURL(blob);
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = () => reject(reader.error);
+            reader.readAsDataURL(blob);
         });
-      };
+    };
 
     const saveUrlsFromS3 = async () => {
         const allUsableUrls = {};
 
-        // Use for...of for proper handling of async/await inside loops
-        for (const [pipeKey, pipeArray] of Object.entries(data.images)) {
-            const usableUrls = [];
+        if (typeof data.images.result === 'string') {
+            // console.log(data.images.result)
+            const prediction = data.images.result
+            const usableUrls = []
+            const s3 = new AWS.S3({
+                accessKeyId: 'AKIAR7NCUGFH5QXSLHUT',//process.env.REACT_APP_ACCESS_KEY_ID,
+                secretAccessKey: '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',//process.env.REACT_APP_SECRET_ACCESS_KEY,
+            });
+            const params = {
+                Bucket: 'roofrx', Key:
+                    data.images.classified_image_path
+            };
 
-            // Loop through each item in the pipeArray
-            for (const pipe of pipeArray) {
-                const url = pipe.url;
-                const parts = url.split('/');
-                // const bucket_name = parts[2].split('.')[0];
-                const objectKey = parts.slice(4).join('/');
+            console.log("The params are", params);
+            s3.getObject(params, async (err, data) => {
+                if (err) console.log(err, err.stack); // an error occurred
 
-                try {
-                    const downloadResult = await downloadData({ key: objectKey }).result;
-                    const blobThing = await downloadResult.body.blob();
-                    const localUrl = URL.createObjectURL(blobThing);
+                console.log("The download result is", data);
+                let blob = new Blob([data.Body], { type: 'image/jpeg' });
 
-                    // Assume predictions are also part of the `pipe` object
-                    // Structure each item as desired
-                    usableUrls.push({
-                        predictions: pipe.predictions,
-                        url: await convertUrlToDataUri(localUrl),
-                    });
-                } catch (error) {
-                    console.error("Error downloading or converting file:", error);
-                    continue;
+                const url = URL.createObjectURL(blob);
+                console.log("The URL is", url);
+                usableUrls.push({
+                    predictions: prediction,
+                    url: await convertUrlToDataUri(url),
+                });
+
+                allUsableUrls[0] = usableUrls;
+
+            });
+            console.log(usableUrls)
+            setImagePaths(allUsableUrls); // Assuming setImagePaths is your state setter
+
+        } else {
+
+            // Use for...of for proper handling of async/await inside loops
+            for (const [pipeKey, pipeArray] of Object.entries(data.images)) {
+                const usableUrls = [];
+
+                // Loop through each item in the pipeArray
+                for (const pipe of pipeArray) {
+                    const url = pipe.url;
+                    const parts = url.split('/');
+                    // const bucket_name = parts[2].split('.')[0];
+                    const objectKey = parts.slice(4).join('/');
+
+                    try {
+                        const downloadResult = await downloadData({ key: objectKey }).result;
+                        const blobThing = await downloadResult.body.blob();
+                        const localUrl = URL.createObjectURL(blobThing);
+
+                        // Assume predictions are also part of the `pipe` object
+                        // Structure each item as desired
+                        usableUrls.push({
+                            predictions: pipe.predictions,
+                            url: await convertUrlToDataUri(localUrl),
+                        });
+                    } catch (error) {
+                        console.error("Error downloading or converting file:", error);
+                        continue;
+                    }
                 }
+
+                allUsableUrls[pipeKey] = usableUrls;
             }
 
-            allUsableUrls[pipeKey] = usableUrls;
+            console.log("ALL USABLE URLS", allUsableUrls);
+            setImagePaths(allUsableUrls); // Assuming setImagePaths is your state setter
         }
-
-        console.log("ALL USABLE URLS", allUsableUrls);
-        setImagePaths(allUsableUrls); // Assuming setImagePaths is your state setter
     };
 
 
-    
+
 
     function calculateBrokenPipes(data) {
         let brokenPipesCount = 0;
-      
+
         // Loop through each pipe (pipe1 and pipe2)
         for (const pipe in data) {
-          for (const item of data[pipe]) {
-            const predictions = item.predictions;
-      
-            // Check if the first prediction is less than the second
-            if (predictions[0] < predictions[1]) {
-                brokenPipesCount++;
-              break; // Only count one broken pipe per pipe
+            for (const item of data[pipe]) {
+                const predictions = item.predictions;
+
+                // Check if the first prediction is less than the second
+                if (predictions[0] < predictions[1]) {
+                    brokenPipesCount++;
+                    break; // Only count one broken pipe per pipe
+                }
             }
-          }
         }
         //setValues({...data, brokenPipes: brokenPipesCount})
         return brokenPipesCount;
-      }
-    
+    }
 
-      function identifyBrokenPipes(data) {
+
+    function identifyBrokenPipes(data) {
         const pipeStatuses = [];
-      
+        if (typeof data.result === 'string') return data.result
         // Loop through each pipe (pipe1 and pipe2)
         for (const pipe in data) {
-          const pipeName = `Pipe # ${pipe.slice(4)}`; // Extract pipe number
-          let pipeStatus = "Not Broken";  // Default status
-      
-          for (const item of data[pipe]) {
-            const predictions = item.predictions;
-      
-            // Check if the first prediction is less than the second
-            if (predictions[0] < predictions[1]) {
-              pipeStatus = "Broken";
-              break; // Only identify one broken pipe per pipe
-            }
-          }
-      
-          pipeStatuses.push(`${pipeName}: ${pipeStatus}`); // Combine pipe name and status
-        }
-      
-        return pipeStatuses.join("\n"); // Join list elements with newlines
-      }
+            const pipeName = `Pipe # ${pipe.slice(4)}`; // Extract pipe number
+            let pipeStatus = "Not Broken";  // Default status
 
-  
+            for (const item of data[pipe]) {
+                const predictions = item.predictions;
+
+                // Check if the first prediction is less than the second
+                if (predictions[0] < predictions[1]) {
+                    pipeStatus = "Broken";
+                    break; // Only identify one broken pipe per pipe
+                }
+            }
+
+            pipeStatuses.push(`${pipeName}: ${pipeStatus}`); // Combine pipe name and status
+        }
+
+        return pipeStatuses.join("\n"); // Join list elements with newlines
+    }
+
+
     // const pipes = [
     //     {
     //         pipeNumber: 2,
@@ -353,9 +390,9 @@ const PDFDocument = ({ signature, isSigned}) => {
         <Document>
             <Page size={{ width: 612, height: 792 }} style={styles.page} break>
                 <View style={styles.section}>
-                    <Text style={styles.company}>Bit Busters</Text>
+                    <Text style={styles.company}>RoofRx</Text>
 
-                    <Text style={styles.title}>Report of Broken Pipes</Text>
+                    <Text style={styles.title}>Report of Inspection</Text>
                     <Text style={styles.date}>Date: {data?.date}</Text>
 
 
@@ -439,22 +476,23 @@ const PDFDocument = ({ signature, isSigned}) => {
                         <Text style={styles.subtitle}>Price</Text>
 
                         <View style={{ flexDirection: "row" }}>
-                            <Text style={styles.clientInfoType}>Total of Broken Pipes: </Text>
+                            <Text style={styles.clientInfoType}>Results: </Text>
                             <Text style={styles.clientInfo}>{data.brokenPipes}</Text>
                         </View>
 
                         <View style={{ flexDirection: "row" }}>
-                            <Text style={styles.clientInfoType}>Price per Pipe: $</Text>
+                            <Text style={styles.clientInfoType}>Price per item: $</Text>
                             <Text style={styles.clientInfo}>{data?.price}</Text>
                         </View>
 
                         <View style={{ flexDirection: "row" }}>
                             <Text style={styles.clientInfoType}>Total: $</Text>
-                            <Text style={styles.clientInfo}>{data.brokenPipes * data.price}</Text>
+                            {typeof data.images.result === "string" ? <Text style={styles.message}>$100</Text>:
+                            <Text style={styles.clientInfo}>{data.brokenPipes * data.price}</Text>}
                         </View>
                     </View>
 
-                    {signature  && isSigned  && <Image src={signature} style={styles.signatureImage} />}
+                    {signature && isSigned && <Image src={signature} style={styles.signatureImage} />}
                     <Text style={styles.signature}>Signature</Text>
 
                     <Text style={styles.pageNumber} render={({ pageNumber, totalPages }) => `${pageNumber} of ${totalPages}`} fixed />
@@ -469,15 +507,18 @@ const PDFDocument = ({ signature, isSigned}) => {
                     </Text>
                     {/* Iterate over each pipe object */}
                     {Object.entries(imagePaths).map(([key, images]) => (
+
                         <View key={key}>
+                            {console.log(images)}
                             <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "start", marginBottom: "5px" }}>
                                 {images.map((item, index) => (
-                                        <View key={index} style={{ marginRight: "10px", alignItems: 'center' }}>
-                                            <Image src={item.url} alt={`From ${key} ${index + 1}`} style={styles.image} />
-                                            {/* Determine and display the condition based on predictions */}
-                                            <Text style={styles.message}> {item.predictions[0] > item.predictions[1] ? `${key}: Not Broken` : `${key}: Broken`}</Text>
-                                        </View>
-                            ))}
+                                    <View key={index} style={{ marginRight: "10px", alignItems: 'center' }}>
+                                        <Image src={item.url} alt={`From ${key} ${index + 1}`} style={styles.image} />
+                                        {/* Determine and display the condition based on predictions */}
+                                        {typeof data.images.result === "string" ? <Text style={styles.message}>{item.predictions}</Text>:
+                                        <Text style={styles.message}> {item.predictions[0] > item.predictions[1] ? `${key}: Not Broken` : `${key}: Broken`}</Text>}
+                                    </View>
+                                ))}
                             </View>
                         </View>
                     ))}

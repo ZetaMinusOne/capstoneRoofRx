@@ -80,7 +80,7 @@ const ProjectRoutes = () => {
       </reportGenerationContext.Provider>,
     },
     {
-      path: "/tilesreport",
+      path: "/report",
       element: <reportGenerationContext.Provider value={{ data, setValues: setData }}>
       <ReportGeneratedTiles />
       </reportGenerationContext.Provider>,

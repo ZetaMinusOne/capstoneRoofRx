@@ -283,12 +283,12 @@ const ResultsPage = () => {
           // Check if pipe result at index is defined
           const result = pipeResult;
           reports.push({ index: 0, pipeImages, result });
-          navigate("/reportgenerated", { state: { isAdmin } });
+          navigate("/report", { state: { isAdmin } });
         // });
       } else {
         // Log or handle the case where pipe result is undefined
         console.error(`Result for pipe 0 is undefined`);
-        navigate("/reportgenerated", { state: { isAdmin } });
+        navigate("/report", { state: { isAdmin } });
       }
     // });
 
@@ -530,4 +530,4 @@ const ResultsPage = () => {
   }
 };
 
-export default TilesResultsPage;
+export default ResultsPage;

@@ -133,11 +133,11 @@ useEffect(() => {
 //MODIFY THE DATA OBJECT SO THEY CAN PASS THE CORRESPONDING VARIABLES
 const userID = localStorage.getItem('userID')
 useEffect(() => {
-  const result = calculateBrokenPipes(data.images);
-  console.log('total of broken pipes', result)
+  // const result = calculateBrokenPipes(data.images);
+  // console.log('total of broken pipes', result)
 
-  setValues({...data, brokenPipes: result})
-  console.log("Value Set",data)
+  // setValues({...data, brokenPipes: result})
+  // console.log("Value Set",data)
 
   
   fetchData(); // Call the async function
@@ -192,6 +192,7 @@ const downloadImageFromS3 = async (s3Url) => {
   const bucket_name = parts[2].split('.')[0];
   const objectKey = parts.slice(4).join('/');
   const downloadResult = await downloadData({ key: objectKey }).result;
+
   console.log("DOWNLOAD RESULT +++++++++++++++++++++++++++++++++++++++++++++++++++++:", downloadResult);
   const blobThing = await downloadResult.body.blob();
 
@@ -216,7 +217,7 @@ const fetchData = async () => {
       console.log("USER ID FROM LOCAL STORAGE",userID)
       setPersonalInfo({ ...personalInfo, firstName: user.FirstName, lastName: user.LastName, phoneNumber: user.PhoneNumber, email: user.Email, userId: user.User_ID, signature: user.Signature_URL });
       console.log("DATA BEFORE SET VALUES",responseData)
-      setValues({...data, inspectorFirstName: user.FirstName + " " + user.LastName, inspectorPhoneNumber: user.PhoneNumber, inspectorEmail: user.Email, brokenPipes: calculateBrokenPipes(data.images)} )
+      setValues({...data, inspectorFirstName: user.FirstName + " " + user.LastName, inspectorPhoneNumber: user.PhoneNumber, inspectorEmail: user.Email, brokenPipes: data.images.result} )
       if(user.Signature_URL !== null){
       downloadImage(user.Signature_URL);
     }

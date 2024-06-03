@@ -305,28 +305,45 @@ export default function ReportGeneratedShinglesPage() {
     setEnableAnalyze(false);
     console.log("Uploaded images:", dragAndDropImagesParent);
 
-    try {
-      const toUpload = await handleImageStructureForUpload();
+    // try {
+    //   const toUpload = await handleImageStructureForUpload();
   
-      console.log("Result to be Uploaded:", toUpload);
+    //   console.log("Result to be Uploaded:", toUpload);
 
-      const uploadedUrls = await handleImagesUpload(toUpload);
+    //   const uploadedUrls = await handleImagesUpload(toUpload);
 
-      console.log("Result to Call the Model:", uploadedUrls);
+    //   console.log("Result to Call the Model:", uploadedUrls);
 
-      const modelResponse = await handleModelStructure(dragAndDropImagesParent);
+    //   const modelResponse = await handleModelStructure(dragAndDropImagesParent);
 
-      setValues(data => ({ ...data, images: modelResponse }));
+    //   setValues(data => ({ ...data, images: modelResponse }));
 
-      console.log("MODEL RESPONSE:", modelResponse);
-      if(modelResponse) {
-        setEnableButton(true);
-        setEnableAnalyze(true);
-      }
-    } catch (error) {
-      console.error("Error in handleAnalyzeImages:", error);
-      // Handle the error here, e.g., show a notification or display an error message
+    //   console.log("MODEL RESPONSE:", modelResponse);
+    //   if(modelResponse) {
+    //     setEnableButton(true);
+    //     setEnableAnalyze(true);
+    //   }
+    // } catch (error) {
+    //   console.error("Error in handleAnalyzeImages:", error);
+    //   // Handle the error here, e.g., show a notification or display an error message
+    // }
+    const formData = new FormData();
+    formData.append('model','shingle-model');
+    formData.append('image', selectedFile);
+    // console.log(formData.values());
+    const response = await fetch('https://aro53nc5zg.execute-api.us-east-1.amazonaws.com/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    const modelResponse = await response.json();
+    console.log(modelResponse)
+    setLoading(false);
+    setValues(data => ({ ...data, images: modelResponse }));
+    if(modelResponse) {
+      setEnableButton(true);
+      setEnableAnalyze(true);
     }
+
   }
 
   useEffect(() => {
@@ -589,7 +606,7 @@ export default function ReportGeneratedShinglesPage() {
     } else{
         // setOriginalData(data)
         // navigate("/reportgenerated", { state: { formData, isAdmin } });
-        navigate("/analyzeimages", { state: { formData, isAdmin } });
+        navigate("/results", { state: { formData, isAdmin } });
 
       }
     // try {
@@ -628,6 +645,10 @@ export default function ReportGeneratedShinglesPage() {
       [key]: value
     }));
   }
+
+  const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
 
   const WithLabelExample = () => {
     const currentValue = Number(currentProgress.toFixed(2));
@@ -673,6 +694,8 @@ export default function ReportGeneratedShinglesPage() {
     }
   }
 
+  const [selectedFile, setSelectedFile] = useState(null); // State to store the selected file
+
   console.log("Data pass to the context", data)
   return (
     <>
@@ -709,7 +732,13 @@ export default function ReportGeneratedShinglesPage() {
             </div>
     )}
     </div>
-            <DynamicInput handleDragAndDropImagesParent={setDragAndDropImagesParent} enableButton={enableButton}/>
+    {/* // New Section */}
+    {selectedFile && (
+      <img src={URL.createObjectURL(selectedFile)} alt="Selected" height={700} width={800} />
+    )}
+    <input type='file' onChange={handleFileChange} />
+    {/* // New */}
+            {/* <DynamicInput handleDragAndDropImagesParent={setDragAndDropImagesParent} enableButton={enableButton}/> */}
           </div>
           <div className="m-auto">
             <button className="p-2 sm:px-5 font-dmsans font-bold min-w-[160px] rounded-[24px] bg-indigo-700 hover:bg-blue-400 text-white-A700" onClick={handleAnalyzeImages}>

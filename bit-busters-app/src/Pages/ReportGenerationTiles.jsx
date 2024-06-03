@@ -9,8 +9,8 @@ import DropdownMenu from "../components/DropDown";
 import { useNavigate,useLocation } from "react-router-dom";
 import { reportGenerationContext } from "../components/Context";
 import Modal from "../components/Modals/ReportGenerationModal";
-import TextField from '@mui/material/TextField';
-import { Button } from "@mui/material";
+// import TextField from '@mui/material/TextField';
+// import { Button } from "@mui/material";
 import { DragAndDropFile } from "../components/DragAndDropFile";
 
 export default function ReportGeneratedTilesPage() {
