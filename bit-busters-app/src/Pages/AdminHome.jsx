@@ -7,10 +7,10 @@ import DropdownMenu from "../components/DropDown";
 import { useContext, } from "react";
 import { reportGenerationContext } from "../components/Context";
 
-const dropDownOptions = [
-  { label: "Personal Info", value: "option1" },
-  { label: "Sign-out", value: "option2" },
-];
+// const dropDownOptions = [
+//   { label: "Personal Info", value: "option1" },
+//   { label: "Sign-out", value: "option2" },
+// ];
 
 export default function MainpagePage() {
   const navigate = useNavigate();
@@ -18,13 +18,13 @@ export default function MainpagePage() {
   const isAdmin = location.state?.isAdmin || false;
   const { data, setValues } = useContext(reportGenerationContext); 
 
-  const handleOptionChange = (selectedOption) => {
-    if (selectedOption.value === "option1") {
-      navigate("/accountinformation", { state: { isAdmin } });
-    } else if (selectedOption.value === "option2") {
-      navigate("/signin");
-    }
-  };
+  // const handleOptionChange = (selectedOption) => {
+  //   if (selectedOption.value === "option1") {
+  //     navigate("/accountinformation", { state: { isAdmin } });
+  //   } else if (selectedOption.value === "option2") {
+  //     navigate("/signin");
+  //   }
+  // };
   const backgroundStyle = {
     backgroundColor: "",
     backgroundImage: ``,
@@ -101,7 +101,7 @@ export default function MainpagePage() {
                 Start New Report
               </Button>
               <Button
-                  size="lg"
+                  // size="lg"
                   className="max-h-[401px] leading-4 w-full max-w-[401px] m-auto rounded-[20px] dark_navy_blue hover:bg-blue-500 focus:outline-none focus:bg-blue-900 shadow-md text-white font-bold"
                   onClick={() => {
                     navigate("/reportgenerationtiles", { state: { isAdmin } });
@@ -110,7 +110,7 @@ export default function MainpagePage() {
                   Start New Report Tiles
                 </Button>
                 <Button
-                  size="lg"
+                  // size="lg"
                   className="max-h-[401px] leading-4 w-full max-w-[401px] m-auto rounded-[20px] dark_navy_blue hover:bg-blue-500 focus:outline-none focus:bg-blue-900 shadow-md text-white font-bold"
                   onClick={() => {
                     navigate("/reportgenerationshingles", { state: { isAdmin } });
@@ -119,7 +119,7 @@ export default function MainpagePage() {
                   Start New Report Shingles
                 </Button>
                 <Button
-                  size="lg"
+                  // size="lg"
                   className="max-h-[401px] leading-4 w-full max-w-[401px] rounded-[20px] m-auto dark_navy_blue hover:bg-blue-500 focus:outline-none focus:bg-blue-900 shadow-md text-white font-bold"
                   onClick={() => {
                     navigate("/manageinspectors", { state: { isAdmin } });  

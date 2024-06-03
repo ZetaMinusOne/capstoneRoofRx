@@ -9,7 +9,9 @@ import DropdownMenu from "../components/DropDown";
 import { useNavigate,useLocation } from "react-router-dom";
 import { reportGenerationContext } from "../components/Context";
 import Modal from "../components/Modals/ReportGenerationModal";
-
+import TextField from '@mui/material/TextField';
+import { Button } from "@mui/material";
+import { DragAndDropFile } from "../components/DragAndDropFile";
 
 export default function ReportGeneratedTilesPage() {
   const navigate = useNavigate();
@@ -123,54 +125,100 @@ export default function ReportGeneratedTilesPage() {
     return modelResponseStructure;
   }
 
-  const handleModelCall = async (pipeInfo) => {
-    return new Promise((resolve, reject) => {
-      try {
-        console.log("Calling The ML Model");
-        fetch('https://zs9op711v1.execute-api.us-east-1.amazonaws.com/dev/mlmodel', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({pipeInfo}),
-        })
-          .then((response) => {
-            console.log("THIS IS THE ML MODEL FETCH RESPONSE:", response);
-            if (response.status === 504) {
-              // Handle the 504 error condition
-              console.log("Gateway Timeout (504) error occurred");
-              // Reject the promise with an error message
-              reject("Gateway Timeout (504) error occurred");
+  // const handleModelCall = async (pipeInfo) => {
+  //   return new Promise((resolve, reject) => {
+  //     try {
+  //       console.log("Calling The ML Model");
+  //       fetch('https://zs9op711v1.execute-api.us-east-1.amazonaws.com/dev/mlmodel', {
+  //         method: 'POST',
+  //         headers: {
+  //           'Content-Type': 'application/json'
+  //         },
+  //         body: JSON.stringify({pipeInfo}),
+  //       })
+  //         .then((response) => {
+  //           console.log("THIS IS THE ML MODEL FETCH RESPONSE:", response);
+  //           if (response.status === 504) {
+  //             // Handle the 504 error condition
+  //             console.log("Gateway Timeout (504) error occurred");
+  //             // Reject the promise with an error message
+  //             reject("Gateway Timeout (504) error occurred");
 
-              setErrorScanning(true);
-              setEnableButton(true);
+  //             setErrorScanning(true);
+  //             setEnableButton(true);
 
-            } else if(response.status === 500){
-              console.log("Image Processing (500) error occurred");
+  //           } else if(response.status === 500){
+  //             console.log("Image Processing (500) error occurred");
 
-              reject("Image Processing (500) error occurred");
+  //             reject("Image Processing (500) error occurred");
 
-              setErrorScanning(true);
-              setEnableButton(true);
-            }
-            else{
-              resolve(response);
-            }
-          })
-          .catch((error) => {
-            setLoading(false);
-            console.error('Error Calling the ML Model:', error);
-            reject(error);
-          });
+  //             setErrorScanning(true);
+  //             setEnableButton(true);
+  //           }
+  //           else{
+  //             resolve(response);
+  //           }
+  //         })
+  //         .catch((error) => {
+  //           setLoading(false);
+  //           console.error('Error Calling the ML Model:', error);
+  //           reject(error);
+  //         });
 
-        //console.log("THIS IS THE URL FETCH RESPONSE:", forModel)
-      } catch (error) {
-        setLoading(false);
-        console.error('Error Calling the ML Model:', error);
-        throw error; // Re-throw the error to handle it further up the chain
-      }
+  //       //console.log("THIS IS THE URL FETCH RESPONSE:", forModel)
+  //     } catch (error) {
+  //       setLoading(false);
+  //       console.error('Error Calling the ML Model:', error);
+  //       throw error; // Re-throw the error to handle it further up the chain
+  //     }
+  //   });
+  // }
+
+  const handleModelCall= async () => {
+    // if (!selectedFile) {
+    //   console.error('No file selected');
+    //   return;
+    // };
+
+    const formData = new FormData();
+    formData.append('model','tile-model');
+    formData.append('image', dragAndDropImagesParent[0].url);
+ 
+    console.log(formData.values());
+
+    const resp = await fetch('https://aro53nc5zg.execute-api.us-east-1.amazonaws.com/upload', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      body: formData,
     });
-  }
+    
+
+    // axios.post('https://aro53nc5zg.execute-api.us-east-1.amazonaws.com/upload', formData, {
+    //   headers: {
+    //     'Content-Type': 'multipart/form-data',
+    //   },
+    // })
+    //   .then(response => {
+    //     setResult(response.data.result);
+    //     const s3 = new AWS.S3({
+    //       accessKeyId: process.env.REACT_APP_ACCESS_KEY_ID,
+    //       secretAccessKey: process.env.REACT_APP_SECRET_ACCESS_KEY,
+    //     });
+    //     const params = {Bucket: 'roofrx', Key: 
+    //     response.data.classified_image_path};
+    //     s3.getSignedUrl('getObject', params, function (err, url) {
+    //       console.log(params);
+    //       console.log(err)
+    //       console.log("The URL is", url);
+    //       setImresult(url);
+    //     });
+    //   })
+    //   .catch(error => {
+    //     console.error('Error uploading image:', error);
+    //   });
+  };
 
   const handleImagesUpload = async (toUpload) => {
     const uploadedUrls = {}; // Object to store uploaded URLs
@@ -299,30 +347,63 @@ export default function ReportGeneratedTilesPage() {
     setCurrentProgress(0);
     setEnableButton(false);
     setEnableAnalyze(false);
-    console.log("Uploaded images:", dragAndDropImagesParent);
+    // console.log("Uploaded images:", dragAndDropImagesParent[0]);
+    
+    // const response = await fetch(dragAndDropImagesParent[0].url); // Fetch the Blob data using the URL
+    // const blob = await response.blob(); // Get the Blob object from the response
+    // blob.name = dragAndDropImagesParent[0].name;
+    // blob.lastModifiedDate = new Date();
+    // const reader = new FileReader();
+    // reader.readAsDataURL(blob)
+    // reader.onload = () => {
+    //   const imageUrl = reader.result;
+    //   console.log("Blob:", imageUrl);
+    // };
+    
+    // console.log("Blob:", blob);
 
-    try {
-      const toUpload = await handleImageStructureForUpload();
+    const formData = new FormData();
+    formData.append('model','tile-model');
+    formData.append('image', dragAndDropImagesParent[0]);
+ 
+    // console.log(formData.values());
+
+    const response = await fetch('https://aro53nc5zg.execute-api.us-east-1.amazonaws.com/upload', {
+      method: 'POST',
+      // headers: {
+      //   'Content-Type': 'multipart/form-data',
+      // },
+      body: formData,
+    });
+
+    const modelResponse = await response.json();
+
+    // console.log("RESPONSE:", await modelResponse.json());
+
+    setLoading(false);
+
+    // try {
+    //   const toUpload = await handleImageStructureForUpload();
   
-      console.log("Result to be Uploaded:", toUpload);
+    //   console.log("Result to be Uploaded:", toUpload);
 
-      const uploadedUrls = await handleImagesUpload(toUpload);
+    //   const uploadedUrls = await handleImagesUpload(toUpload);
 
-      console.log("Result to Call the Model:", uploadedUrls);
+    //   console.log("Result to Call the Model:", uploadedUrls);
 
-      const modelResponse = await handleModelStructure(uploadedUrls);
+    //   const modelResponse = await handleModelStructure(uploadedUrls);
 
       setValues(data => ({ ...data, images: modelResponse }));
 
-      console.log("MODEL RESPONSE:", modelResponse);
+    //   console.log("MODEL RESPONSE:", modelResponse);
       if(modelResponse) {
         setEnableButton(true);
         setEnableAnalyze(true);
       }
-    } catch (error) {
-      console.error("Error in handleAnalyzeImages:", error);
-      // Handle the error here, e.g., show a notification or display an error message
-    }
+    // } catch (error) {
+    //   console.error("Error in handleAnalyzeImages:", error);
+    //   // Handle the error here, e.g., show a notification or display an error message
+    // }
   }
 
   useEffect(() => {
@@ -585,7 +666,7 @@ export default function ReportGeneratedTilesPage() {
     } else{
         // setOriginalData(data)
         // navigate("/reportgenerated", { state: { formData, isAdmin } });
-        navigate("/analyzeimages", { state: { formData, isAdmin } });
+        navigate("/results", { state: { formData, isAdmin } });
 
       }
     // try {
@@ -705,9 +786,30 @@ export default function ReportGeneratedTilesPage() {
             </div>
     )}
     </div>
-            <DynamicInput handleDragAndDropImagesParent={setDragAndDropImagesParent} enableButton={enableButton}/>
+            {/* <DynamicInput handleDragAndDropImagesParent={setDragAndDropImagesParent} enableButton={enableButton}/> */}
           </div>
           <div className="m-auto">
+            {/* {  
+        console.log("dragAndDropImagesParent", (fetch(dragAndDropImagesParent[0].url).blob()))} */}
+          <DragAndDropFile
+                pipeIndex={0}
+                // pipeNumbers={1}
+                addToImageList={(newImageList) => {
+                  setDragAndDropImagesParent((prevImages) =>  [newImageList]
+                  // {
+                  //   // const updatedImages = [...prevImages];
+                  //   // updatedImages[0] = [...prevImages[0] || [], ...newImageList.images]; // Concatenate existing and new images
+                  //   // console.log("added dragAndDropImages:", updatedImages); 
+                  //   // return updatedImages;
+                  // }
+                );
+                }}
+                deleteFromImageList={(newImageList) => setDragAndDropImagesParent([])}
+                images={dragAndDropImagesParent[0]}
+                enableButton= {enableButton}
+            />
+          {/* <TextField type="file" onChange={(e) => console.log(e.target.files)}/> */}
+    
             <button className="p-2 sm:px-5 font-dmsans font-bold min-w-[160px] rounded-[24px] bg-indigo-700 hover:bg-blue-400 text-white-A700" onClick={handleAnalyzeImages}>
               Analyze Images
             </button>

@@ -20,6 +20,8 @@ import ViewReportPage from "./Pages/ViewReportPage"
 import AdminHistoryOfReports from "./Pages/AdminHistoryOfReports"
 import { useState } from "react";
 import { reportGenerationContext } from "./components/Context";
+import ResultsPage from "./Pages/Results";
+import ReportGeneratedTiles from "./Pages/ReportGeneratedTiles";
 
 const ProjectRoutes = () => {
 
@@ -69,6 +71,18 @@ const ProjectRoutes = () => {
       path: "/analyzeimages",
       element: <reportGenerationContext.Provider value={{ data, setValues: setData }}>
       <AnalyzeImagePage />
+      </reportGenerationContext.Provider>,
+    },
+    {
+      path: "/results",
+      element: <reportGenerationContext.Provider value={{ data, setValues: setData }}>
+      <ResultsPage />
+      </reportGenerationContext.Provider>,
+    },
+    {
+      path: "/tilesreport",
+      element: <reportGenerationContext.Provider value={{ data, setValues: setData }}>
+      <ReportGeneratedTiles />
       </reportGenerationContext.Provider>,
     },
 
