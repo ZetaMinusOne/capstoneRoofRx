@@ -6,6 +6,7 @@ import { useNavigate,useLocation } from "react-router-dom";
 import DropdownMenu from "../components/DropDown";
 import { useContext, } from "react";
 import { reportGenerationContext } from "../components/Context";
+import { ButtonGroup } from "@aws-amplify/ui-react";
 
 // const dropDownOptions = [
 //   { label: "Personal Info", value: "option1" },
@@ -85,23 +86,28 @@ export default function MainpagePage() {
             <DropdownMenu />
         </div>
       <Sidebar1 isAdmin={isAdmin} className="flex flex-col w-[78px] h-screen gap-6 top-0 py-3 bg-indigo-700 !sticky overflow-auto" />
+      
       <div className="flex justify-center w-full m-auto">
           {/* <div className="flex flex-col  gap-7 justify-center w-[100%] md:w-full"> */}
             {/* <div className="flex md:flex-col justify-end items-start ml-[738px] gap-[23px] md:ml-0 relative">
             </div> */}
             {/* <div className="flex md:flex-col w-[88%] md:w-full justify-center items-center gap-[198px]" style={{ marginTop: '200px' }}> */}
               {/* <div className="flex flex-col w-full md:p-5 rounded-[20px]" style={{ marginBottom: '150px' }}> */}
-              <Button
+            {/* Vertical - Button Group 1 */}
+            <ButtonGroup style={{ margin: "100px" }} vertical>
+            <Button
+                style={{ margin: "100px" }}
                 size="lg"
                 className="max-h-[401px] leading-4 w-full max-w-[401px] m-auto rounded-[20px] dark_navy_blue hover:bg-blue-500 focus:outline-none focus:bg-blue-900 shadow-md text-white font-bold"
                 onClick={() => {
                   navigate("/reportgeneration", { state: { isAdmin  } });                    
                 }}
                 >
-                Start New Report
+                Start New Report Pipes
               </Button>
               <Button
-                  // size="lg"
+                  style={{ margin: "100px" }}
+                  size="lg"
                   className="max-h-[401px] leading-4 w-full max-w-[401px] m-auto rounded-[20px] dark_navy_blue hover:bg-blue-500 focus:outline-none focus:bg-blue-900 shadow-md text-white font-bold"
                   onClick={() => {
                     navigate("/reportgenerationtiles", { state: { isAdmin } });
@@ -109,8 +115,12 @@ export default function MainpagePage() {
                   >
                   Start New Report Tiles
                 </Button>
+            </ButtonGroup>
+              
+            <ButtonGroup style={{ margin: "100px" }} vertical>
                 <Button
-                  // size="lg"
+                  style={{ margin: "100px" }}
+                  size="lg"
                   className="max-h-[401px] leading-4 w-full max-w-[401px] m-auto rounded-[20px] dark_navy_blue hover:bg-blue-500 focus:outline-none focus:bg-blue-900 shadow-md text-white font-bold"
                   onClick={() => {
                     navigate("/reportgenerationshingles", { state: { isAdmin } });
@@ -119,24 +129,29 @@ export default function MainpagePage() {
                   Start New Report Shingles
                 </Button>
                 <Button
-                  // size="lg"
-                  className="max-h-[401px] leading-4 w-full max-w-[401px] rounded-[20px] m-auto dark_navy_blue hover:bg-blue-500 focus:outline-none focus:bg-blue-900 shadow-md text-white font-bold"
+                  style={{ margin: "100px" }}
+                  size="lg"
+                  className="max-h-[401px] leading-4 w-full max-w-[401px] m-auto rounded-[20px] dark_navy_blue hover:bg-blue-500 focus:outline-none focus:bg-blue-900 shadow-md text-white font-bold"
                   onClick={() => {
                     navigate("/manageinspectors", { state: { isAdmin } });  
                   }}
                 >
                   Manage Inspectors
                 </Button>
+              </ButtonGroup>
               {/* <div */}
                 {/* className="flex flex-col w-full md:p-5 rounded-[20px]"
                 style={{ marginBottom: '150px', boxShadow: 'none', backgroundColor: 'transparent' }}
               > */}
                   </div>
+                  
               {/* </div> */}
             {/* </div> */}
           {/* </div> */}
         {/* </div> */}
       </div>
+      
+      
     </>
   );
 }

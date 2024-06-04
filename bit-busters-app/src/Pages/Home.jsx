@@ -96,7 +96,7 @@ export default function MainpagePage() {
                     navigate("/reportgeneration", { state: { isAdmin } });
                   }}
                   >
-                  Start New Report
+                  Start New Report Pipes
                 </Button>
                 <Button
                   size="lg"
