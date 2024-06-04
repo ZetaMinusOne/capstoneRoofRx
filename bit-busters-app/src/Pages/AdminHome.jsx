@@ -6,8 +6,8 @@ import { useNavigate,useLocation } from "react-router-dom";
 import DropdownMenu from "../components/DropDown";
 import { useContext, } from "react";
 import { reportGenerationContext } from "../components/Context";
-import { ButtonGroup } from "@aws-amplify/ui-react";
-
+import { ButtonGroup, Grid } from "@aws-amplify/ui-react";
+import Square from "../components/Extra";
 // const dropDownOptions = [
 //   { label: "Personal Info", value: "option1" },
 //   { label: "Sign-out", value: "option2" },
@@ -87,7 +87,7 @@ export default function MainpagePage() {
         </div>
       <Sidebar1 isAdmin={isAdmin} className="flex flex-col w-[78px] h-screen gap-6 top-0 py-3 bg-indigo-700 !sticky overflow-auto" />
       
-      <div className="flex justify-center w-full m-auto">
+      <div className="flex justify-center w-full">
           {/* <div className="flex flex-col  gap-7 justify-center w-[100%] md:w-full"> */}
             {/* <div className="flex md:flex-col justify-end items-start ml-[738px] gap-[23px] md:ml-0 relative">
             </div> */}
@@ -139,19 +139,9 @@ export default function MainpagePage() {
                   Manage Inspectors
                 </Button>
               </ButtonGroup>
-              {/* <div */}
-                {/* className="flex flex-col w-full md:p-5 rounded-[20px]"
-                style={{ marginBottom: '150px', boxShadow: 'none', backgroundColor: 'transparent' }}
-              > */}
+              
                   </div>
-                  
-              {/* </div> */}
-            {/* </div> */}
-          {/* </div> */}
-        {/* </div> */}
-      </div>
-      
-      
+            </div>
     </>
   );
 }
