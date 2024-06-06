@@ -8,9 +8,10 @@ frontend:
     # IMPORTANT - Please verify your build commands
     build:
       commands:
-        - pip3 install --user pipenv
-        - pip3 install virtualenv
-        - export PATH=$PATH:$HOME/Library/Python/3.12/bin
+        # - pip3 install --user pipenv
+        # - pip3 install virtualenv
+        # - pip3 install --user pipenv
+        # - export PATH=$PATH:$HOME/Library/Python/3.12/bin
         - npm run build
   artifacts:
     # IMPORTANT - Please verify your build output directory
@@ -24,6 +25,6 @@ backend:
   phases:
     build:
       commands: 
-        - pip3 install --user pipenv
-        - pip3 install virtualenv
+        # - pip3 install --user pipenv
+        # - pip3 install virtualenv
         - amplifyPush --simple
