@@ -1,2 +1,0 @@
-Endpoint Configuration ARN: arn:aws:sagemaker:us-east-1:136169402703:endpoint-config/bitbusters-mlmodel-endpoint-config
-Endpoint ARN: arn:aws:sagemaker:us-east-1:136169402703:endpoint/bitbusters-mlmodel-endpoint
