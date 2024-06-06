@@ -303,7 +303,7 @@ export default function ReportGeneratedShinglesPage() {
     setCurrentProgress(0);
     setEnableButton(false);
     setEnableAnalyze(false);
-    console.log("Uploaded images:", dragAndDropImagesParent);
+ 
 
     // try {
     //   const toUpload = await handleImageStructureForUpload();
@@ -338,10 +338,10 @@ export default function ReportGeneratedShinglesPage() {
       });
 
       const modelResponse = await response.json();
-      console.log(modelResponse)
-      setLoading(false);
-      setValues(data => ({ ...data, images: modelResponse }));
+
       if (modelResponse) {
+        setLoading(false);
+        setValues(data => ({ ...data, images: modelResponse }));
         setEnableButton(true);
         setEnableAnalyze(true);
         setCurrentProgress(100);
