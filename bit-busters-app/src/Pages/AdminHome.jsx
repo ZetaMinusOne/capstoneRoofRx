@@ -6,8 +6,7 @@ import { useNavigate,useLocation } from "react-router-dom";
 import DropdownMenu from "../components/DropDown";
 import { useContext, } from "react";
 import { reportGenerationContext } from "../components/Context";
-import { ButtonGroup, Grid } from "@aws-amplify/ui-react";
-import Square from "../components/Extra";
+import { ButtonGroup } from "@aws-amplify/ui-react";
 // const dropDownOptions = [
 //   { label: "Personal Info", value: "option1" },
 //   { label: "Sign-out", value: "option2" },
@@ -97,7 +96,7 @@ export default function MainpagePage() {
             <ButtonGroup style={{ margin: "100px" }} vertical>
             <Button
                 style={{ margin: "100px" }}
-                size="lg"
+                size="sm"
                 className="max-h-[401px] leading-4 w-full max-w-[401px] m-auto rounded-[20px] dark_navy_blue hover:bg-blue-500 focus:outline-none focus:bg-blue-900 shadow-md text-white font-bold"
                 onClick={() => {
                   navigate("/reportgeneration", { state: { isAdmin  } });                    
@@ -107,7 +106,7 @@ export default function MainpagePage() {
               </Button>
               <Button
                   style={{ margin: "100px" }}
-                  size="lg"
+                  size="sm"
                   className="max-h-[401px] leading-4 w-full max-w-[401px] m-auto rounded-[20px] dark_navy_blue hover:bg-blue-500 focus:outline-none focus:bg-blue-900 shadow-md text-white font-bold"
                   onClick={() => {
                     navigate("/reportgenerationtiles", { state: { isAdmin } });
@@ -120,17 +119,19 @@ export default function MainpagePage() {
             <ButtonGroup style={{ margin: "100px" }} vertical>
                 <Button
                   style={{ margin: "100px" }}
-                  size="lg"
+                  size="sm"
                   className="max-h-[401px] leading-4 w-full max-w-[401px] m-auto rounded-[20px] dark_navy_blue hover:bg-blue-500 focus:outline-none focus:bg-blue-900 shadow-md text-white font-bold"
                   onClick={() => {
                     navigate("/reportgenerationshingles", { state: { isAdmin } });
                   }}
+                  // leftIcon={<RoofingIcon/>}
                   >
+               
                   Start New Report Shingles
                 </Button>
                 <Button
                   style={{ margin: "100px" }}
-                  size="lg"
+                  size="sm"
                   className="max-h-[401px] leading-4 w-full max-w-[401px] m-auto rounded-[20px] dark_navy_blue hover:bg-blue-500 focus:outline-none focus:bg-blue-900 shadow-md text-white font-bold"
                   onClick={() => {
                     navigate("/manageinspectors", { state: { isAdmin } });  

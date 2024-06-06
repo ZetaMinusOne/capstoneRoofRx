@@ -699,6 +699,8 @@ const downloadImage = async (url) =>{
     // console.log(personalInfo.signature === null)
     // console.log(!isSigned)
     const blobFiles = await pdf(MyDoc).toBlob();
+    console.log("Genrating PDF Blob", MyDoc);
+    console.log("Genrating PDF Blob", blobFiles);
     console.log("entering in handleGenerate")
     if (signatureCanvasRef.current && !signatureCanvasRef.current.isEmpty() && personalInfo.signature === null && !isSigned) {
       setUrl(signatureCanvasRef.current.getTrimmedCanvas().toDataURL('image/png'));
@@ -852,7 +854,7 @@ const downloadImage = async (url) =>{
   }
 
   const handleNavigate = () => {
-    navigate("/editreport", { state: { isAdmin } });
+    navigate("/editreport-ts", { state: { isAdmin } });
   }
 
   const convertBlobToBase64 = (blob) => {
@@ -861,7 +863,6 @@ const downloadImage = async (url) =>{
 
     const blobThing = blob;
 
-    console.log()
     const reader = new FileReader();
 
     reader.onload = () => {

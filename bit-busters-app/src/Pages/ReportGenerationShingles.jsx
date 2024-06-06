@@ -6,7 +6,7 @@ import DynamicInput from "../components/DynamicInput"
 import FadeLoader from "react-spinners/ClipLoader";
 import SearchableDropdown from "../components/inputWithSearch"
 import DropdownMenu from "../components/DropDown";
-import { useNavigate,useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { reportGenerationContext } from "../components/Context";
 import Modal from "../components/Modals/ReportGenerationModal";
 
@@ -70,11 +70,11 @@ export default function ReportGeneratedShinglesPage() {
   const [currentProgress, setCurrentProgress] = useState(0);
   const [barloading, setBarLoading] = useState(false);
 
-  const [enableButton, setEnableButton] = useState(true) ;
+  const [enableButton, setEnableButton] = useState(true);
   const [enableAnalyze, setEnableAnalyze] = useState(false);
   const [errorScanning, setErrorScanning] = useState(false);
   const [errorUploading, setErrorUploading] = useState(false);
-   // useEffect (() => {
+  // useEffect (() => {
   //   setLoading(true);
   //   setTimeout(() => {
   //     setLoading(false);
@@ -104,7 +104,7 @@ export default function ReportGeneratedShinglesPage() {
 
       console.log("CURRENT PIPE:", currentPipe);
       console.log("TOTAL NUMBER OF PIPES BEFORE DIVISION:", totalNumberOfPipes);
-    
+
       const prediction = await handleModelCall(uploadedUrls[pipe]);
       if (prediction) {
         const readPrediction = await prediction.json()
@@ -113,7 +113,7 @@ export default function ReportGeneratedShinglesPage() {
         modelResponseStructure[pipe] = readPrediction['pipeInfo']; // Store S3 URL in the corresponding pipe object
       }
 
-      setCurrentProgress((currentPipe/totalNumberOfPipes) * 100);
+      setCurrentProgress((currentPipe / totalNumberOfPipes) * 100);
     }
 
     setLoading(false);
@@ -129,13 +129,13 @@ export default function ReportGeneratedShinglesPage() {
         console.log("Calling The ML Model");
         const formData = new FormData();
         formData.append('image', pipeInfo);
-        formData.append('model','shingles');
+        formData.append('model', 'shingles');
 
         fetch('https://aro53nc5zg.execute-api.us-east-1.amazonaws.com/upload', {
           method: 'POST',
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
           body: formData,
         })
           .then((response) => {
@@ -149,7 +149,7 @@ export default function ReportGeneratedShinglesPage() {
               setErrorScanning(true);
               setEnableButton(true);
 
-            } else if(response.status === 500){
+            } else if (response.status === 500) {
               console.log("Image Processing (500) error occurred");
 
               reject("Image Processing (500) error occurred");
@@ -157,7 +157,7 @@ export default function ReportGeneratedShinglesPage() {
               setErrorScanning(true);
               setEnableButton(true);
             }
-            else{
+            else {
               resolve(response);
             }
           })
@@ -181,30 +181,30 @@ export default function ReportGeneratedShinglesPage() {
 
     console.log("toUpload:", toUpload);
 
-      for (const pipe in toUpload) {
-        uploadedUrls[pipe] = {}; // Initialize pipe object
-        let counter = 1;
-        let key = `url${counter}`;
+    for (const pipe in toUpload) {
+      uploadedUrls[pipe] = {}; // Initialize pipe object
+      let counter = 1;
+      let key = `url${counter}`;
 
-        console.log("PROCEEDING WITH PIPE", pipe);
-    
-        const urls = Object.values(toUpload[pipe]);
-        for (const url of urls) {
-          const uploadedUrl = await handleImageUploadS3(url);
-          if (uploadedUrl) {
-            const readUploadUrl = await uploadedUrl.json()
-            console.log("THIS IS THE URL TO BE SAVED:", readUploadUrl.uploaded_url);
-            console.log("THIS IS THE KEY THAT WILL STORE THE URL:", key);
-            uploadedUrls[pipe][key] = readUploadUrl.uploaded_url; // Store S3 URL in the corresponding pipe object
-            counter = counter + 1; // Generate key with counter
-            key = `url${counter}`;
-          }
+      console.log("PROCEEDING WITH PIPE", pipe);
+
+      const urls = Object.values(toUpload[pipe]);
+      for (const url of urls) {
+        const uploadedUrl = await handleImageUploadS3(url);
+        if (uploadedUrl) {
+          const readUploadUrl = await uploadedUrl.json()
+          console.log("THIS IS THE URL TO BE SAVED:", readUploadUrl.uploaded_url);
+          console.log("THIS IS THE KEY THAT WILL STORE THE URL:", key);
+          uploadedUrls[pipe][key] = readUploadUrl.uploaded_url; // Store S3 URL in the corresponding pipe object
+          counter = counter + 1; // Generate key with counter
+          key = `url${counter}`;
         }
       }
+    }
 
-      console.log("Uploaded URLS:", uploadedUrls)
+    console.log("Uploaded URLS:", uploadedUrls)
 
-      return uploadedUrls;
+    return uploadedUrls;
   }
 
   const handleImageUploadS3 = async (url) => {
@@ -225,14 +225,14 @@ export default function ReportGeneratedShinglesPage() {
             console.log("THIS IS THE URL FETCH RESPONSE:", response);
             if (response.status !== 200) {
               // Handle the 504 error condition
-              console.log( `The following error with status code: ${response.status} occurred`);
+              console.log(`The following error with status code: ${response.status} occurred`);
               // Reject the promise with an error message
               reject(`Error status code: ${response.status}`);
 
               setErrorUploading(true);
               setEnableButton(true);
 
-            } 
+            }
             resolve(response);
           })
           .catch((error) => {
@@ -281,16 +281,16 @@ export default function ReportGeneratedShinglesPage() {
 
       const file = image;
       const reader = new FileReader();
-  
+
       reader.onload = () => {
         const imageUrl = reader.result;
         resolve(imageUrl); // Resolve the promise with the URL
       };
-  
+
       reader.onerror = (error) => {
         reject(error); // Reject the promise if there's an error
       };
-  
+
       reader.readAsDataURL(file);
     });
   }
@@ -307,7 +307,7 @@ export default function ReportGeneratedShinglesPage() {
 
     // try {
     //   const toUpload = await handleImageStructureForUpload();
-  
+
     //   console.log("Result to be Uploaded:", toUpload);
 
     //   const uploadedUrls = await handleImagesUpload(toUpload);
@@ -328,31 +328,40 @@ export default function ReportGeneratedShinglesPage() {
     //   // Handle the error here, e.g., show a notification or display an error message
     // }
     const formData = new FormData();
-    formData.append('model','shingle-model');
+    formData.append('model', 'shingle-model');
     formData.append('image', selectedFile);
     // console.log(formData.values());
-    const response = await fetch('https://aro53nc5zg.execute-api.us-east-1.amazonaws.com/upload', {
-      method: 'POST',
-      body: formData,
-    });
-    const modelResponse = await response.json();
-    console.log(modelResponse)
-    setLoading(false);
-    setValues(data => ({ ...data, images: modelResponse }));
-    if(modelResponse) {
-      setEnableButton(true);
-      setEnableAnalyze(true);
+    try {
+      const response = await fetch('https://aro53nc5zg.execute-api.us-east-1.amazonaws.com/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const modelResponse = await response.json();
+      console.log(modelResponse)
+      setLoading(false);
+      setValues(data => ({ ...data, images: modelResponse }));
+      if (modelResponse) {
+        setEnableButton(true);
+        setEnableAnalyze(true);
+        setCurrentProgress(100);
+      }
+    } catch (error) {
+      console.error("Error in handleAnalyzeImages:", error);
+      // Handle the error here, e.g., show a notification or display an error message
+      setErrorScanning(true);
+      // setErrorUploading(true);
     }
 
   }
 
   useEffect(() => {
-   const savedData =  window.localStorage.getItem("data")
-   const savedDataParse = savedData ? JSON.parse(savedData) : null;
-   console.log("JSON.parse(savedData)",JSON.parse(savedData))
-   console.log("savedDataParse",savedDataParse)
-   if (data) setValues({...data, ...savedDataParse})
-  //  console.log("data",data)
+    const savedData = window.localStorage.getItem("data")
+    const savedDataParse = savedData ? JSON.parse(savedData) : null;
+    console.log("JSON.parse(savedData)", JSON.parse(savedData))
+    console.log("savedDataParse", savedDataParse)
+    if (data) setValues({ ...data, ...savedDataParse })
+    //  console.log("data",data)
   }, [])
 
   useEffect(() => {
@@ -385,13 +394,13 @@ export default function ReportGeneratedShinglesPage() {
 
     if (newValue.length > 30) {
       setLastNameError(true);
-      
+
     } else {
       setLastNameError(false);
     }
     if (/[~`1234567890\-=[\]\\;',./!@#$%^&*()_+{}|:"<>?]/.test(newValue) || newValue.trim().length === 0) {
       setLastNameErrorChar(true)
-      
+
     } else {
       setLastNameErrorChar(false);
     }
@@ -408,9 +417,9 @@ export default function ReportGeneratedShinglesPage() {
       setAddress1Error(true);
       return
     }
-    if(newValue.trim().length === 0){
+    if (newValue.trim().length === 0) {
       setAddress1Error2(true);
-    } else{
+    } else {
       setAddress1Error2(false);
     }
     setAddress1Error(false);
@@ -426,9 +435,9 @@ export default function ReportGeneratedShinglesPage() {
       return
     }
 
-    if(newValue.trim().length === 0){
+    if (newValue.trim().length === 0) {
       setAddress2Error2(true);
-    } else{
+    } else {
       setAddress2Error2(false);
     }
 
@@ -512,29 +521,29 @@ export default function ReportGeneratedShinglesPage() {
       setPhoneNumberError(true);
       return
     }
-    if(newValue.trim().length === 0){
+    if (newValue.trim().length === 0) {
       setPhoneNumberError2(true);
-    }else{
+    } else {
       setPhoneNumberError2(false);
     }
   };
 
-  
+
   const handleEmailChange = (e) => {
     const newValue = e.target.value;
     // Common regular expressions for validations
     const emailFormatRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const restrictedCharsRegex = /[!#$%&*\/=?^`{|}~\s]/;
-  
+
     // Resetting errors initially
     setEmailError(false);
     setEmailError2(false);
-  
+
     // Check if email is empty
     if (newValue.trim().length === 0) {
       setEmailError2(true);
     }
-  
+
     // Check if email format is correct
     if (!emailFormatRegex.test(newValue)) {
       setEmailError(true);
@@ -544,14 +553,14 @@ export default function ReportGeneratedShinglesPage() {
     if (restrictedCharsRegex.test(newValue) || newValue.length > 50) {
       setEmailError(true);
     }
-    
-  
+
+
     // If all checks are passed, update the email in form data and context
     setFormData(prevData => ({ ...prevData, email: newValue }));
     setValues(prevData => ({ ...prevData, email: newValue })); // This updates the context
   };
 
-   // const handleDateChange = (e) => {
+  // const handleDateChange = (e) => {
   //   const newValue = e.target.value;
   //   setFormData({ ...formData, dateVisited: newValue });
   //   setValues({ ...data, dateVisited: newValue }); //This update the context
@@ -578,7 +587,7 @@ export default function ReportGeneratedShinglesPage() {
       phoneNumberError ||
       phoneNumberError2 ||
       emailError ||
-      emailError2 
+      emailError2
       // ||
 
       // data.firstname?.length < 1 ||
@@ -600,15 +609,15 @@ export default function ReportGeneratedShinglesPage() {
       // formData.city.length < 1 ||
       // formData.phoneNumber.length < 1 ||
       // formData.email.length < 1 
-      ) {
+    ) {
       setSubmitError(true)
-      
-    } else{
-        // setOriginalData(data)
-        // navigate("/reportgenerated", { state: { formData, isAdmin } });
-        navigate("/results", { state: { formData, isAdmin } });
 
-      }
+    } else {
+      // setOriginalData(data)
+      // navigate("/reportgenerated", { state: { formData, isAdmin } });
+      navigate("/results", { state: { formData, isAdmin } });
+
+    }
     // try {
     //   const response = await fetch('your-api-gateway-endpoint-url', {
     //     method: 'Put',
@@ -622,8 +631,8 @@ export default function ReportGeneratedShinglesPage() {
     //     throw new Error('Failed to submit data');
     //   }
 
-      // If submission is successful, navigate to the next page
-      // navigate("/reportgenerated", { state: { formData } });
+    // If submission is successful, navigate to the next page
+    // navigate("/reportgenerated", { state: { formData } });
     // } catch (error) {
     //   console.error('Error submitting data:', error);
     // }
@@ -639,7 +648,7 @@ export default function ReportGeneratedShinglesPage() {
   //   return phoneNumberPattern.test(phoneNumber);
   // };
 
-  const handleInputChange = (key, value)=>{
+  const handleInputChange = (key, value) => {
     setValues(prevState => ({
       ...prevState,
       [key]: value
@@ -651,35 +660,37 @@ export default function ReportGeneratedShinglesPage() {
   };
 
   const WithLabelExample = () => {
-    const currentValue = Number(currentProgress.toFixed(2));
-    if(currentProgress != 100) {return (
-      <div className="w-full max-w-[1020px] m-auto" style={{ width: '100%', backgroundColor: '#f0f0f0', borderRadius: '5px', padding: '2px', boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.1)' }}>
-        <div
-          style={{
-            width: `${currentValue}%`,
-            height: '20px',
-            backgroundColor: '#007bff',
-            borderRadius: '5px',
-            transition: 'width 0.3s ease-in-out',
-          }}
-        >
-          <span
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: '100%',
-              color: 'white',
-              fontWeight: 'bold',
-              fontSize: '14px',
-            }}
-          >
-            {currentValue}%
-          </span>
-        </div>
-      </div>
-    );}
-    else{
+    // const currentValue = Number(currentProgress.toFixed(2));
+    if (currentProgress === 100) {
+    //   return (
+    //     <div className="w-full max-w-[1020px] m-auto" style={{ width: '100%', backgroundColor: '#f0f0f0', borderRadius: '5px', padding: '2px', boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.1)' }}>
+    //       <div
+    //         style={{
+    //           width: `${currentValue}%`,
+    //           height: '20px',
+    //           backgroundColor: '#007bff',
+    //           borderRadius: '5px',
+    //           transition: 'width 0.3s ease-in-out',
+    //         }}
+    //       >
+    //         <span
+    //           style={{
+    //             display: 'flex',
+    //             justifyContent: 'center',
+    //             alignItems: 'center',
+    //             height: '100%',
+    //             color: 'white',
+    //             fontWeight: 'bold',
+    //             fontSize: '14px',
+    //           }}
+    //         >
+    //           {currentValue}%
+    //         </span>
+    //       </div>
+    //     </div>
+    //   );
+    // }
+    // else {
       return (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#52c41a', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: '10px' }}>
@@ -713,31 +724,31 @@ export default function ReportGeneratedShinglesPage() {
         <Sidebar1 isAdmin={isAdmin} className="flex flex-col w-[78px] h-screen gap-6 top-0 py-3 bg-indigo-700 !sticky overflow-auto" />
         <div className="flex flex-col w-full justify-center gap-7">
           <div className="justify-center item-center flex flex-col max-w-[700px] m-auto mt-40 w-full gap-2">
-          <div className="instructions-container pb-10">
-          <button onClick={showInstructions}>Instructions<span>&#9660;</span></button>
-          {showInstructionContent && (
-            <div id="instructionContent">
-              <h1>To generate a report:</h1>
-              <ol>
-                <li>
-                  <strong>1) Upload Images:</strong> Press the "Add Pipe" button to open the dropbox, then select and upload images for analysis.
-                </li>
-                <li>
-                  <strong>2) Analyze Images:</strong> Press the "Analyze Images" button after uploading to initiate the analysis process. You will be notified when the analysis is done.
-                </li>
-                <li>
-                  <strong>3) Fill Client Information:</strong> Enter client details such as name, address, and contact information in the respective fields. Ensure all required fields are completed before proceeding with view results.
-                </li>
-              </ol>
+            <div className="instructions-container pb-10">
+              <button onClick={showInstructions}>Instructions<span>&#9660;</span></button>
+              {showInstructionContent && (
+                <div id="instructionContent">
+                  <h1>To generate a report:</h1>
+                  <ol>
+                    <li>
+                      <strong>1) Upload Images:</strong>  Select and upload images for analysis.
+                    </li>
+                    <li>
+                      <strong>2) Analyze Images:</strong> Press the "Analyze Images" button after uploading to initiate the analysis process. You will be notified when the analysis is done.
+                    </li>
+                    <li>
+                      <strong>3) Fill Client Information:</strong> Enter client details such as name, address, and contact information in the respective fields. Ensure all required fields are completed before proceeding with view results.
+                    </li>
+                  </ol>
+                </div>
+              )}
             </div>
-    )}
-    </div>
-    {/* // New Section */}
-    {selectedFile && (
-      <img src={URL.createObjectURL(selectedFile)} alt="Selected" height={700} width={800} />
-    )}
-    <input type='file' onChange={handleFileChange} />
-    {/* // New */}
+            {/* // New Section */}
+            {selectedFile && (
+              <img src={URL.createObjectURL(selectedFile)} alt="Selected" height={700} width={800} />
+            )}
+            <input type='file' onChange={handleFileChange} />
+            {/* // New */}
             {/* <DynamicInput handleDragAndDropImagesParent={setDragAndDropImagesParent} enableButton={enableButton}/> */}
           </div>
           <div className="m-auto">
@@ -789,7 +800,8 @@ export default function ReportGeneratedShinglesPage() {
                   value={data.firstName}
                   onChange={(e) => {
                     // handleInputChange("firstName", e.target.value)
-                    handleFirstNameChange(e)}}
+                    handleFirstNameChange(e)
+                  }}
                   placeholder={`Enter Client First Name`}
                   className="self-stretch sm:pr-5 font-poppins border border-gray-300 box-border rounded-[4px] h-[48px] pl-4 hover:border-blue-500 hover:shadow-md font-normal font-[16px] "
                 />
@@ -806,7 +818,8 @@ export default function ReportGeneratedShinglesPage() {
                   value={data.lastName}
                   onChange={(e) => {
                     // handleInputChange("lastName", e.target.value)
-                    handleLastNameChange(e)}}
+                    handleLastNameChange(e)
+                  }}
                   placeholder={`Enter Client Last Name `}
                   className="self-stretch sm:pr-5 font-poppins border border-gray-300 box-border rounded-[4px] h-[48px] pl-4 hover:border-blue-500 hover:shadow-md font-normal font-[16px] "
                 />
@@ -827,14 +840,15 @@ export default function ReportGeneratedShinglesPage() {
               <input
                 value={data.address1}
                 onChange={(e) => {
-                    // handleInputChange("address1", e.target.value)
-                    handleAddress1Change(e)}}
+                  // handleInputChange("address1", e.target.value)
+                  handleAddress1Change(e)
+                }}
                 placeholder={`Enter Client Street Address`}
                 className="self-stretch sm:pr-5 font-poppins border border-gray-300 box-border rounded-[4px] h-[48px] pl-4 hover:border-blue-500 hover:shadow-md font-normal font-[16px] "
               />
               {address1Error && <Text size="xs" className="text-red-500">Street Address field should not exceed 40 characters. Make sure you divide the address between Address 1 and Address 2.</Text>}
               {address1Error2 && <Text size="xs" className="text-red-500">Street Adress field can't be empty.</Text>}
-             </div>
+            </div>
             <div className="flex flex-col items-start gap-[2px] max-w-[1020px] w-[100%] ">
               <Heading as="h6" className="uppercase">
                 Apartment, Suite, Unit, Building, Floor
@@ -842,16 +856,17 @@ export default function ReportGeneratedShinglesPage() {
               <input
                 value={data.address2}
                 onChange={(e) => {
-                    // handleInputChange("address2", e.target.value)
-                    handleAddress2Change(e)}}
+                  // handleInputChange("address2", e.target.value)
+                  handleAddress2Change(e)
+                }}
                 placeholder={`Apt., Suite, Unit, Building, Floor (Optional)`}
                 className="self-stretch sm:pr-5 font-poppins border border-gray-300 box-border rounded-[4px] h-[48px] pl-4 hover:border-blue-500 hover:shadow-md font-normal "
               />
               {address2Error && <Text size="xs" className="text-red-500">Apartment, Suit, unit, Building, Floor field should not exceed 40 characters. Make sure you divide the address between Address 1 and Address 2.</Text>}
               {address2Error2 && <Text size="xs" className="text-red-500">Apartment, Suit, unit, Building, Floor field can't be empty.</Text>}
-</div>
+            </div>
             <div className="flex sm:flex-col self-stretch gap-5">
-            <div className="flex flex-col items-start gap-[2px] max-w-[500px] w-full">
+              <div className="flex flex-col items-start gap-[2px] max-w-[500px] w-full">
                 <Heading as="h2" className="uppercase">
                   City
                 </Heading>
@@ -861,7 +876,8 @@ export default function ReportGeneratedShinglesPage() {
                   value={data.city}
                   onChange={(e) => {
                     // handleInputChange("city", e.target.value)
-                    handleCityChange(e)}}
+                    handleCityChange(e)
+                  }}
                   className="self-stretch sm:pr-5 font-poppins border border-gray-300 box-border rounded-[4px] h-[48px] pl-4 hover:border-blue-500 hover:shadow-md font-normal"
                 />
                 {cityError && <Text size="xs" className="text-red-500">City should not exceed 46 characters</Text>}
@@ -885,7 +901,7 @@ export default function ReportGeneratedShinglesPage() {
               </div>
             </div>
             <div className="flex sm:flex-col self-stretch gap-5 max-w-[1020px] w-full">
-            <div className="flex flex-col items-startgap-[2px] max-w-[500px] w-full">
+              <div className="flex flex-col items-startgap-[2px] max-w-[500px] w-full">
                 <Heading as="h2" className="uppercase">
                   Zip Code
                 </Heading>
@@ -895,7 +911,8 @@ export default function ReportGeneratedShinglesPage() {
                   value={data.zipcode}
                   onChange={(e) => {
                     // handleInputChange("zipcode", e.target.value)
-                    handleZipcodeChange(e)}}
+                    handleZipcodeChange(e)
+                  }}
                   className="self-stretch sm:pr-5 font-poppins border border-gray-300 box-border rounded-[4px] h-[48px] pl-4 hover:border-blue-500 hover:shadow-md font-normal"
                 />
                 {zipcodeError && <Text size="xs" className="text-red-500">Zipcode should not exceed 9 characters.</Text>}
@@ -910,7 +927,8 @@ export default function ReportGeneratedShinglesPage() {
                   value={data.country}
                   onChange={(e) => {
                     // handleInputChange("country", e.target.value)
-                    handleCountryChange(e)}}
+                    handleCountryChange(e)
+                  }}
                   placeholder={`Enter Client Country`}
                   className="self-stretch sm:pr-5 font-poppins border border-gray-300 box-border rounded-[4px] h-[48px] pl-4 hover:border-blue-500 hover:shadow-md font-normal"
                 />
@@ -923,7 +941,7 @@ export default function ReportGeneratedShinglesPage() {
               Contact
             </Text>
             <div className="flex sm:flex-col gap-5 max-w-[1020px]">
-            <div className="flex flex-col items-start gap-[2px] max-w-[500px] w-full ">
+              <div className="flex flex-col items-start gap-[2px] max-w-[500px] w-full ">
                 <Heading as="h3" className="uppercase">
                   Phone
                 </Heading>
@@ -933,7 +951,8 @@ export default function ReportGeneratedShinglesPage() {
                   value={data.phoneNumber}
                   onChange={(e) => {
                     handleInputChange("phoneNumber", e.target.value)
-                    handlePhoneNumberChange(e)}}
+                    handlePhoneNumberChange(e)
+                  }}
                   className="self-stretch sm:pr-5 font-poppins border border-gray-300 box-border rounded-[4px] h-[48px] pl-4 hover:border-blue-500 hover:shadow-md font-normal"
                 />
                 {phoneNumberError && <Text size="xs" className="text-red-500">Enter a valid phone number.</Text>}
@@ -949,7 +968,8 @@ export default function ReportGeneratedShinglesPage() {
                   value={data.email}
                   onChange={(e) => {
                     // handleInputChange("email", e.target.value)
-                    handleEmailChange(e)}}
+                    handleEmailChange(e)
+                  }}
                   className="self-stretch sm:pr-5 font-poppins border border-gray-300 box-border rounded-[4px] h-[48px] pl-4 hover:border-blue-500 hover:shadow-md font-normal"
                 />
                 {emailError && <Text size="xs" className="text-red-500">Enter a valid email.</Text>}
@@ -978,7 +998,7 @@ export default function ReportGeneratedShinglesPage() {
           </div>
           <div className="m-auto mb-[20px]">
             {enableAnalyze && <button
-              onClick={ () => {enableButton && handleSubmit()}}
+              onClick={() => { enableButton && handleSubmit() }}
               className="p-2 sm:px-5 font-dmsans font-bold min-w-[159px] rounded-[24px] bg-indigo-700 hover:bg-blue-400 text-white-A700">
               View Results
             </button>}

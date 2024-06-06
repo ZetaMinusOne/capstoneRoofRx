@@ -53,10 +53,10 @@ export default function CreateAccountPage() {
       setEmailError("Email cannot be more than 50 characters.");
       return;
     }
-    if (!newValue.endsWith('@upr.edu')) {
-      setEmailError('Email must end with @upr.edu');
-      return;
-    }
+    // if (!newValue.endsWith('@upr.edu')) {
+    //   setEmailError('Email must end with @upr.edu');
+    //   return;
+    // }
   };
 
   const handlePasswordChange = (e, maxLength) => {
@@ -251,9 +251,9 @@ export default function CreateAccountPage() {
 
   const isValidEmail = (email) => {
     const emailPattern = /\S+@\S+\.\S+/;
-    if(email.endsWith('@upr.edu')){
+    // if(email.endsWith('@upr.edu')){
       return emailPattern.test(email);
-    }
+    // }
   };
 
   const isValidPhoneNumber = (phoneNumber) => {

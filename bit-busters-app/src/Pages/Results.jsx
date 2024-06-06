@@ -443,7 +443,7 @@ const ResultsPage = () => {
                 />
               </div>
               <div className="flex flex-box w-full mt-[40px] gap-2 m-auto max-w-[600px]">
-                <Button
+                {/* <Button
                   color="gray_900_e5"
                   size="sm"
                   rightIcon={<Img src="images/img_creditcardoff.svg" alt="credit_card_off" />}
@@ -452,7 +452,7 @@ const ResultsPage = () => {
                   disabled={!imagePaths[Object.keys(imagePaths)[currentPipe]] || imagePaths[Object.keys(imagePaths)[currentPipe]].length === 0} // Disable the button if there are no images in the current pipe
                 >
                   Deny Image
-                </Button>
+                </Button> */}
 
                 <Button
                   color="green_400"

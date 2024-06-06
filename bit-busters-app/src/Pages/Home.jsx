@@ -6,6 +6,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import DropdownMenu from "../components/DropDown";
 import { useContext, } from "react";
 import { reportGenerationContext } from "../components/Context";
+import { ButtonGroup, Grid } from "@aws-amplify/ui-react";
 
 const backgroundStyle = {
   backgroundColor: "",
@@ -89,17 +90,20 @@ export default function MainpagePage() {
               
             {/* <div className="flex md:flex-col w-[88%] md:w-full justify-center items-center gap-[198px]" style={{ marginTop: '200px' }}> */}
               {/* <div className="flex flex-col w-full md:p-5 rounded-[20px]" style={{ marginBottom: '150px' }}> */}
-                <Button
-                  size="lg"
-                  className="max-h-[401px] leading-4 w-full max-w-[401px] m-auto rounded-[20px] dark_navy_blue hover:bg-blue-500 focus:outline-none focus:bg-blue-900 shadow-md text-white font-bold"
-                  onClick={() => {
-                    navigate("/reportgeneration", { state: { isAdmin } });
-                  }}
-                  >
-                  Start New Report Pipes
-                </Button>
-                <Button
-                  size="lg"
+              <ButtonGroup style={{ margin: "100px" }} vertical>
+            <Button
+                style={{ margin: "100px" }}
+                size="sm"
+                className="max-h-[401px] leading-4 w-full max-w-[401px] m-auto rounded-[20px] dark_navy_blue hover:bg-blue-500 focus:outline-none focus:bg-blue-900 shadow-md text-white font-bold"
+                onClick={() => {
+                  navigate("/reportgeneration", { state: { isAdmin  } });                    
+                }}
+                >
+                Start New Report Pipes
+              </Button>
+              <Button
+                  style={{ margin: "100px" }}
+                  size="sm"
                   className="max-h-[401px] leading-4 w-full max-w-[401px] m-auto rounded-[20px] dark_navy_blue hover:bg-blue-500 focus:outline-none focus:bg-blue-900 shadow-md text-white font-bold"
                   onClick={() => {
                     navigate("/reportgenerationtiles", { state: { isAdmin } });
@@ -107,8 +111,12 @@ export default function MainpagePage() {
                   >
                   Start New Report Tiles
                 </Button>
+            </ButtonGroup>
+              
+            <ButtonGroup style={{ margin: "100px" }} vertical>
                 <Button
-                  size="lg"
+                  style={{ margin: "100px" }}
+                  size="sm"
                   className="max-h-[401px] leading-4 w-full max-w-[401px] m-auto rounded-[20px] dark_navy_blue hover:bg-blue-500 focus:outline-none focus:bg-blue-900 shadow-md text-white font-bold"
                   onClick={() => {
                     navigate("/reportgenerationshingles", { state: { isAdmin } });
@@ -117,14 +125,17 @@ export default function MainpagePage() {
                   Start New Report Shingles
                 </Button>
                 <Button
-                  size="lg"
-                  className="max-h-[401px] leading-4 w-full max-w-[401px] rounded-[20px] m-auto dark_navy_blue hover:bg-blue-500 focus:outline-none focus:bg-blue-900 shadow-md text-white font-bold"
+                  style={{ margin: "100px" }}
+                  size="sm"
+                  className="max-h-[401px] leading-4 w-full max-w-[401px] m-auto rounded-[20px] dark_navy_blue hover:bg-blue-500 focus:outline-none focus:bg-blue-900 shadow-md text-white font-bold"
                   onClick={() => {
-                    navigate("/history", { state: { isAdmin } });
+                    navigate("/manageinspectors", { state: { isAdmin } });  
                   }}
-                  >
-                  History of Reports
+                >
+                  Manage Inspectors
                 </Button>
+              </ButtonGroup>
+              
               {/* <div
                 className="flex flex-col w-full md:p-5 rounded-[20px]"
                 style={{ marginBottom: '150px', boxShadow: 'none', backgroundColor: 'transparent' }}

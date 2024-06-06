@@ -22,6 +22,7 @@ import { useState } from "react";
 import { reportGenerationContext } from "./components/Context";
 import ResultsPage from "./Pages/Results";
 import ReportGeneratedTiles from "./Pages/ReportGeneratedTiles";
+import EditReportTS from "./Pages/EditReportts";
 
 const ProjectRoutes = () => {
 
@@ -141,6 +142,12 @@ const ProjectRoutes = () => {
       path: "/editreport",
       element: <reportGenerationContext.Provider value={{ data, setValues: setData }}>
         <EditReport />
+      </reportGenerationContext.Provider>,
+    },
+    {
+      path: "/editreport-ts",
+      element: <reportGenerationContext.Provider value={{ data, setValues: setData }}>
+        <EditReportTS />
       </reportGenerationContext.Provider>,
     },
 {

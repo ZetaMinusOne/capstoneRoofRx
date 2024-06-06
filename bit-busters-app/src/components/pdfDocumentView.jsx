@@ -387,6 +387,7 @@ const PDFDocument = ({ signature, isSigned }) => {
 
 
     return (
+        isLoading ? <p>Loading...</p> :
         <Document>
             <Page size={{ width: 612, height: 792 }} style={styles.page} break>
                 <View style={styles.section}>
@@ -487,7 +488,7 @@ const PDFDocument = ({ signature, isSigned }) => {
 
                         <View style={{ flexDirection: "row" }}>
                             <Text style={styles.clientInfoType}>Total: $</Text>
-                            {typeof data.images.result === "string" ? <Text style={styles.message}>$100</Text>:
+                            {typeof data.images.result === "string" ? <Text style={styles.message}>100</Text>:
                             <Text style={styles.clientInfo}>{data.brokenPipes * data.price}</Text>}
                         </View>
                     </View>
