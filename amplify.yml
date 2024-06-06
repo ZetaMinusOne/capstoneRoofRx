@@ -14,11 +14,12 @@ frontend:
         - npm run build
   artifacts:
     # IMPORTANT - Please verify your build output directory
-    baseDirectory: /bit-busters-app
+    baseDirectory: build
     files:
       - '**/*'
   cache:
-    paths: []
+    paths: 
+      - .npm/**/*
 backend:
   phases:
     build:
