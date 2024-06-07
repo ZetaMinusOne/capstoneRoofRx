@@ -25,10 +25,11 @@ backend:
   phases:
     build:
       commands: 
-        # - export PATH=$PATH:$HOME/Library/Python/3.12/bin
-        # - pip3 install --user pipenv
-        # - pip3 install virtualenv ##
-        - update-alternatives --install /usr/bin/python3 python3 /usr/local/bin/python3.12
-        - /usr/local/bin/python3.12 -m pip install --upgrade pip
-        - /usr/local/bin/pip3.12 install --user pipenv
+        - export PATH=$PATH:$HOME/Library/Python/3.12/bin
+        - pip3 install --user pipenv
+        - pip3 install virtualenv
+        - pip install --upgrade pip
+        # - update-alternatives --install /usr/bin/python3 python3 /usr/local/bin/python3.12
+        # - /usr/local/bin/python3.12 -m pip install --upgrade pip
+        # - /usr/local/bin/pip3.12 install --user pipenv
         - amplifyPush --simple
