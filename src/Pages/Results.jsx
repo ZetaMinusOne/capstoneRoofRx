@@ -93,8 +93,8 @@ const ResultsPage = () => {
     console.log("data.images", data.images);
         // setResult(response.data.result);
           const s3 = new AWS.S3({
-            accessKeyId: 'AKIAR7NCUGFH5QXSLHUT',//process.env.REACT_APP_ACCESS_KEY_ID,
-            secretAccessKey: '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',//process.env.REACT_APP_SECRET_ACCESS_KEY,
+            accessKeyId: process.env.REACT_APP_ACCESS_KEY_ID,
+            secretAccessKey: process.env.REACT_APP_SECRET_ACCESS_KEY,
           });
           const params = {Bucket: 'roofrx', Key: 
           data.images.classified_image_path};
