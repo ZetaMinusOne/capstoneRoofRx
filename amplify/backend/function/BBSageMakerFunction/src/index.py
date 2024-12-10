@@ -4,9 +4,10 @@ from PIL import Image
 import numpy as np
 from io import BytesIO
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import os
 
 # Create a SageMaker runtime client
-sagemaker_client = boto3.client('sagemaker-runtime', aws_access_key_id='AKIAR7NCUGFH5QXSLHUT', aws_secret_access_key='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')
+sagemaker_client = boto3.client('sagemaker-runtime', aws_access_key_id= os.environ['ACCESS_KEY'], aws_secret_access_key= os.environ['SECRET_ACCESS_KEY'])
 s3_client = boto3.client('s3')
 
 def download_and_preprocess_image(url):
